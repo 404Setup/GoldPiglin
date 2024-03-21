@@ -10,5 +10,5 @@ such as: Spigot, Paper, Purpur, Folia...
 I tested under 1.20, lower versions have not been tested, but it may work.
 
 ## Depend
-- [KotlinMC](https://modrinth.com/plugin/kotlinmc)
-- [NBT-API](https://www.spigotmc.org/resources/nbt-api.7939/)
+- [KotlinMC v1.19.23+](https://modrinth.com/plugin/kotlinmc)
+- [NBT-API v2.12.2](https://www.spigotmc.org/resources/nbt-api.7939/)
