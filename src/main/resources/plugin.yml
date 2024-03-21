@@ -1,0 +1,9 @@
+name: GoldPiglin
+version: '${version}'
+main: stream.fset.plugin.goldpiglin.GoldPiglin
+api-version: '1.20'
+folia-supported: true
+load: STARTUP
+depend: [Kotlin, NBTAPI]
+authors: [404Setup]
+website: https://hangar.papermc.io/404
