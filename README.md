@@ -9,6 +9,11 @@ such as: Spigot, Paper, Purpur, Folia...
 
 I tested under 1.20, lower versions have not been tested, but it may work.
 
+## License
+Use [Apache-2.0](https://github.com/404Setup/GoldPiglin?tab=Apache-2.0-1-ov-file#readme) as the license.
+
+If you publish my work elsewhere, you need my permission first and you must redirect the download source to my Modrinth, Hangar, Gitlab and Github pages and keep the original link. You cannot declare this project as yours.
+
 ## Release
 [Modrinth - GoldPiglin](https://modrinth.com/plugin/goldpiglin)
 
