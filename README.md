@@ -7,7 +7,7 @@ All Bukkit servers from spigot onwards.
 
 such as: Spigot, Paper, Purpur, Folia...
 
-I tested under 1.20, lower versions have not been tested, but it may work.
+I tested under 1.19 - 1.20, lower versions have not been tested, but it may work.
 
 ## License
 Use [Apache-2.0](https://github.com/404Setup/GoldPiglin?tab=Apache-2.0-1-ov-file#readme) as the license.
