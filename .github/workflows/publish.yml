@@ -1,0 +1,44 @@
+name: "Build Release"
+on: 
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get release info
+        run: |
+          release_url="https://api.github.com/repos/${{ github.repository }}/releases/latest"
+          release_info=$(curl $release_url)
+          asset_url=$(echo $release_info | jq -r '.assets[0].browser_download_url')
+          echo "Asset URL: $asset_url"
+          echo "ASSET_URL=$asset_url" >> $GITHUB_ENV
+
+      - name: "Upload to Hangar"
+        uses: benwoo1110/hangar-upload-action@1.0.1
+        with:
+          api_token: ${{ secrets.HANGAR_TOKEN }}
+          slug: ${{ github.event.repository.name }}
+          version: ${{ steps.build.outputs.version }}
+          channel: "Release"
+          files: |
+            - "platforms": "PAPER"
+            - "externalUrl": ${{ env.ASSET_URL }}
+          description: ${{ github.event.release.body }}
+          plugin_dependencies: |
+            "PAPER": 
+              - "name": "KotlinMC"
+                "required": true
+                "externalUrl": "https://modrinth.com/plugin/kotlinmc"
+                "platform": "PAPER"
+              - "name": "NBTAPI"
+                "required": true
+                "externalUrl": "https://hangar.papermc.io/tr7zw/NBTAPI"
+                "platform": "PAPER"
+          platformDependencies: |
+            "PAPER":
+              - 1.20
+              - 1.20.1
+              - 1.20.2
+              - 1.20.3
+              - 1.20.4
