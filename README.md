@@ -19,6 +19,8 @@ If you publish my work elsewhere, you need my permission first and you must redi
 
 [Hangar - GoldPiglin](https://hangar.papermc.io/404/goldpiglin)
 
+[CurseForge - GoldPiglin](https://legacy.curseforge.com/minecraft/bukkit-plugins/goldpiglin)
+
 [Github - GoldPiglin](https://github.com/404Setup/GoldPiglin/releases)
 
 [Gitlab - GoldPiglin](https://gitlab.com/404Setup/GoldPiglin/-/releases)
