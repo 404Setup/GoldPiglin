@@ -42,13 +42,21 @@ class EntityTargetLivingEntity : Listener {
         if (e.entity is Piglin && e.target is Player) {
             val (pig, p) = e.entity as Piglin to e.target as Player
             if (attackMmap[pig.uniqueId] != null) return
-            if (p.inventory.armorContents.all { armorPiece ->
-                    armorPiece?.let {
-                        NBT.get(it) {
-                            nbt -> nbt.getCompound("Trim")?.getString("material")
-                        }.toString()
-                    } != "minecraft:gold"
-                }) {
+            val armorContents = p.inventory.armorContents
+            var allGold = false
+            for (armorPiece in armorContents) {
+                if (armorPiece != null) {
+                    var material: String? = ""
+                    NBT.get(armorPiece) { nbt ->
+                        material = nbt.getCompound("Trim")?.getString("material")
+                    }
+                    if (material == "minecraft:gold") {
+                        allGold = true
+                        break
+                    }
+                }
+            }
+            if (allGold) {
                 e.isCancelled = true
             }
         }
