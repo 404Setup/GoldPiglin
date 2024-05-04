@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'stream.fset.plugin'
-version = '1.1.0'
+version = '1.1.1'
 
 repositories {
     mavenCentral()
@@ -25,10 +25,9 @@ repositories {
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT"
     compileOnly "de.tr7zw:item-nbt-api-plugin:2.12.2"
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -55,4 +54,4 @@ processResources {
     }
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "17"
+compileKotlin.kotlinOptions.jvmTarget = "21"

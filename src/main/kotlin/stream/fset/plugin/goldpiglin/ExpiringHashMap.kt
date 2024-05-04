@@ -1,15 +1,16 @@
 package stream.fset.plugin.goldpiglin
 
-import kotlinx.coroutines.*
+import Scheduler.sendTask
+import java.util.concurrent.TimeUnit
 
 class ExpiringHashMap<K, V>(private val expirationTime: Long, private val expirationScannerTime: Long) {
     private val map = HashMap<K, V>()
     private val expirationMap = HashMap<K, Long>()
 
     init {
-        CoroutineScope(Dispatchers.Default).launch {
+        sendTask {
             while (true) {
-                delay(expirationScannerTime)
+                TimeUnit.SECONDS.sleep(expirationScannerTime)
                 removeExpiredEntries()
             }
         }

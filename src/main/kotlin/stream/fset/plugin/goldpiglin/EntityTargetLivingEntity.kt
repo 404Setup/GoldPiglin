@@ -14,7 +14,7 @@ import java.util.*
 data class ETLE(val player: UUID, val piglin: UUID)
 
 class EntityTargetLivingEntity : Listener {
-    private val attackMmap = ExpiringHashMap<UUID, ETLE>(15000, 30000)
+    private val attackMmap = ExpiringHashMap<UUID, ETLE>(15, 30)
 
     @EventHandler
     fun onPiglinDeath(e: EntityDeathEvent) {
@@ -42,20 +42,16 @@ class EntityTargetLivingEntity : Listener {
         if (e.entity is Piglin && e.target is Player) {
             val (pig, p) = e.entity as Piglin to e.target as Player
             if (attackMmap[pig.uniqueId] != null) return
-            val armorContents = p.inventory.armorContents
-            var allGold = false
-            for (armorPiece in armorContents) {
-                if (armorPiece != null) {
-                    var material: String? = ""
-                    NBT.get(armorPiece) { nbt ->
-                        material = nbt.getCompound("Trim")?.getString("material")
+            val allGold = p.inventory.armorContents.all { itemStack ->
+                itemStack?.let {
+                    var isGold = false
+                    NBT.get(it) { i ->
+                        isGold = i?.getCompound("Trim")?.getString("material") == "minecraft:gold"
                     }
-                    if (material == "minecraft:gold") {
-                        allGold = true
-                        break
-                    }
-                }
+                    isGold
+                } ?: false
             }
+
             if (allGold) {
                 e.isCancelled = true
             }
