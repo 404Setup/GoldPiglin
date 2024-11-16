@@ -16,6 +16,8 @@ If you publish my work elsewhere, you need my permission first and you must redi
 ## Release
 [Modrinth - GoldPiglin](https://modrinth.com/plugin/goldpiglin)
 
+[Curseforge - GoldPiglin](https://www.curseforge.com/minecraft/bukkit-plugins/goldpiglin)
+
 [Hangar - GoldPiglin](https://hangar.papermc.io/404/goldpiglin)
 
 [Github - GoldPiglin](https://github.com/404Setup/GoldPiglin/releases)
