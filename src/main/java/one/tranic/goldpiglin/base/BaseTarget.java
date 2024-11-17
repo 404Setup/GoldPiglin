@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class BaseTarget implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(EntityDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         if (targets.isEmpty()) return;
         Scheduler.execute(() -> {
             List<Map.Entry<UUID, TargetEntry>> ls = targets.filter((it) -> it.getValue().targetId() == event.getEntity().getUniqueId());
