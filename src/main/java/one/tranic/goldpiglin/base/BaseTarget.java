@@ -3,7 +3,10 @@ package one.tranic.goldpiglin.base;
 import one.tranic.goldpiglin.config.Config;
 import one.tranic.goldpiglin.data.ExpiringHashMap;
 import one.tranic.goldpiglin.data.Scheduler;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +16,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +46,23 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
+            Scheduler.singleExecute(() -> {
+                if (Config.getHatred().isNear()) {
+                    List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+                    if (!entitys.isEmpty()) {
+                        for (Entity e : entitys) {
+                            if (e instanceof Player || !(e instanceof Piglin)) continue;
+                            if (Config.getHatred().isCanSee()) {
+                                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
+                                if (!v) continue;
+                            }
+                            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+                        }
+                        return;
+                    }
+                }
+                targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
+            });
         }
     }
 
@@ -72,5 +93,26 @@ public class BaseTarget implements Listener {
 
     public boolean readItemStack(ItemStack itemStack) {
         return false;
+    }
+
+    private boolean canPlayerSeeEntity(Player player, LivingEntity entity) {
+        Location playerLocation = player.getEyeLocation();
+        Vector playerDirection = playerLocation.getDirection();
+        double viewAngle = 45;
+        double maxDistance = 50;
+
+        Location entityLocation = entity.getLocation().add(0, entity.getHeight() / 2, 0);
+
+        Vector directionToEntity = entityLocation.toVector().subtract(playerLocation.toVector()).normalize();
+        double angle = playerDirection.angle(directionToEntity);
+
+        if (angle > Math.toRadians(viewAngle)) {
+            return false;
+        }
+
+        if (playerLocation.distance(entityLocation) > maxDistance) return false;
+
+        RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, maxDistance);
+        return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < entityLocation.toVector().distance(playerLocation.toVector()));
     }
 }

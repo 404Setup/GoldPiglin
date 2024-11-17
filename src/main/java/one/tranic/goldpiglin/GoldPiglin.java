@@ -1,10 +1,14 @@
 package one.tranic.goldpiglin;
 
+import one.tranic.goldpiglin.command.ReloadCommand;
 import one.tranic.goldpiglin.config.Config;
-import one.tranic.goldpiglin.metrics.Metrics;
 import one.tranic.goldpiglin.data.Scheduler;
+import one.tranic.goldpiglin.metrics.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.lang.reflect.Field;
 
 public class GoldPiglin extends JavaPlugin {
     private Metrics metrics;
@@ -25,6 +29,16 @@ public class GoldPiglin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_5.Target(), this);
         } else {
             throw new IllegalStateException("GoldPiglin Plugin Not Supported");
+        }
+
+        try {
+            Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
+            SimpleCommandMap commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
+
+            commandMap.register("greload", "goldpiglin", new ReloadCommand(this));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         metrics = new Metrics(this, 23906);
