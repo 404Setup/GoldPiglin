@@ -28,18 +28,21 @@ public class ExpiringHashMap<K, V> {
 
     private void removeExpiredEntries() {
         long currentTime = System.currentTimeMillis();
-
-        if (expirationMap.isEmpty()) return;
-        List<K> expiredKeys = Util.newArrayList();
-
-        for (Map.Entry<K, Long> entry : expirationMap.entrySet()) {
+        expirationMap.entrySet().removeIf(entry -> {
             if (entry.getValue() < currentTime) {
-                expiredKeys.add(entry.getKey());
+                map.remove(entry.getKey());
+                return true;
             }
-        }
+            return false;
+        });
 
-        for (K key : expiredKeys) {
-            remove(key);
+        // Two-way balance to avoid strange problems
+        if (map.size() != expirationMap.size()) {
+            if (map.size() > expirationMap.size()) {
+                map.keySet().removeIf(key -> !expirationMap.containsKey(key));
+            } else {
+                expirationMap.keySet().removeIf(key -> !map.containsKey(key));
+            }
         }
     }
 
@@ -61,12 +64,11 @@ public class ExpiringHashMap<K, V> {
         List<Map.Entry<K, V>> validEntries = Util.newArrayList();
         long currentTime = System.currentTimeMillis();
 
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            Long expiration = expirationMap.get(entry.getKey());
-            if (expiration != null && currentTime <= expiration) {
-                validEntries.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
+        expirationMap.forEach((key, expiration) -> {
+            if (expiration > currentTime) {
+                validEntries.add(new SimpleEntry<>(key, map.get(key)));
             }
-        }
+        });
 
         return validEntries.iterator();
     }
@@ -75,26 +77,23 @@ public class ExpiringHashMap<K, V> {
         List<Map.Entry<K, V>> filteredEntries = Util.newArrayList();
         long currentTime = System.currentTimeMillis();
 
-        for (Map.Entry<K, V> entry : map.entrySet()) {
-            Long expiration = expirationMap.get(entry.getKey());
-            if (expiration != null && currentTime <= expiration) {
-                Map.Entry<K, V> validEntry = new SimpleEntry<>(entry.getKey(), entry.getValue());
+        expirationMap.forEach((key, expiration) -> {
+            if (expiration > currentTime) {
+                Map.Entry<K, V> validEntry = new SimpleEntry<>(key, map.get(key));
                 if (predicate.test(validEntry)) {
                     filteredEntries.add(validEntry);
                 }
             }
-        }
+        });
 
         return filteredEntries;
     }
 
     public boolean isEmpty() {
-        removeExpiredEntries();
         return map.isEmpty();
     }
 
     public int size() {
-        removeExpiredEntries();
         return map.size();
     }
 
