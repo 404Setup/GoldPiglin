@@ -17,8 +17,8 @@ public class Config {
         FileConfiguration config = plugin.getConfig();
 
         config.addDefault("use-concurrent-map", false);
-        config.addDefault("hatred.expiration-time", 25L);
-        config.addDefault("hatred.expiration-scanner-time", 30L);
+        config.addDefault("hatred.expiration-time", 20L);
+        config.addDefault("hatred.expiration-scanner-time", 40L);
         config.addDefault("hatred.near.enabled", false);
         config.addDefault("hatred.near.x", 6);
         config.addDefault("hatred.near.y", 6);
