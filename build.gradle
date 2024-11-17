@@ -27,7 +27,8 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
-    compileOnly("it.unimi.dsi:fastutil:8.5.15")
+    implementation("org.jetbrains:annotations:24.1.0")
+    implementation("it.unimi.dsi:fastutil:8.5.15")
 }
 
 def targetJavaVersion = 21
