@@ -1,5 +1,6 @@
 package one.tranic.goldpiglin.base;
 
+import one.tranic.goldpiglin.config.Config;
 import one.tranic.goldpiglin.data.ExpiringHashMap;
 import one.tranic.goldpiglin.data.Scheduler;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BaseTarget implements Listener {
-    public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(20, 30);
+    public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(Config.getHatred().getExpirationTime(), Config.getHatred().getExpirationScannerTime());
 
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
