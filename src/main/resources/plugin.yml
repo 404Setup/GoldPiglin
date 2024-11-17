@@ -7,3 +7,6 @@ load: STARTUP
 depend: [NBTAPI]
 authors: [404Setup]
 website: https://hangar.papermc.io/404
+permissions:
+  goldpiglin.command.greload:
+    default: op
