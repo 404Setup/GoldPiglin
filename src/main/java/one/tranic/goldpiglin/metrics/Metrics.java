@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.base;
+package one.tranic.goldpiglin.metrics;
 
 /*
  * This Metrics class was auto-generated and can be copied into your project if you are

@@ -7,20 +7,10 @@ public class ExpiringHashMap<K, V> {
     private final long expirationTime;
     private final Map<K, V> map;
     private final Map<K, Long> expirationMap;
-    private final boolean fastutil;
 
     public ExpiringHashMap(long expirationTime, long expirationScannerTime) {
-        boolean fastutil = false;
-        try {
-            Class.forName("it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap");
-            fastutil = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        this.fastutil = fastutil;
-
-        this.map = this.fastutil ? new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>() : new HashMap<>();
-        this.expirationMap = this.fastutil ? new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>() : new HashMap<>();
+        this.map = Util.newHashMap();
+        this.expirationMap = Util.newHashMap();
 
         this.expirationTime = expirationTime;
 
@@ -40,7 +30,7 @@ public class ExpiringHashMap<K, V> {
         long currentTime = System.currentTimeMillis();
 
         if (expirationMap.isEmpty()) return;
-        List<K> expiredKeys = getList();
+        List<K> expiredKeys = Util.newArrayList();
 
         for (Map.Entry<K, Long> entry : expirationMap.entrySet()) {
             if (entry.getValue() < currentTime) {
@@ -51,10 +41,6 @@ public class ExpiringHashMap<K, V> {
         for (K key : expiredKeys) {
             remove(key);
         }
-    }
-
-    private <T> List<T> getList() {
-        return this.fastutil ? new it.unimi.dsi.fastutil.objects.ObjectArrayList<>() : new ArrayList<>();
     }
 
     private void put(K key, V value) {
@@ -72,7 +58,7 @@ public class ExpiringHashMap<K, V> {
     }
 
     public Iterator<Map.Entry<K, V>> iterator() {
-        List<Map.Entry<K, V>> validEntries = getList();
+        List<Map.Entry<K, V>> validEntries = Util.newArrayList();
         long currentTime = System.currentTimeMillis();
 
         for (Map.Entry<K, V> entry : map.entrySet()) {
@@ -86,7 +72,7 @@ public class ExpiringHashMap<K, V> {
     }
 
     public List<Map.Entry<K, V>> filter(java.util.function.Predicate<Map.Entry<K, V>> predicate) {
-        List<Map.Entry<K, V>> filteredEntries = getList();
+        List<Map.Entry<K, V>> filteredEntries = Util.newArrayList();
         long currentTime = System.currentTimeMillis();
 
         for (Map.Entry<K, V> entry : map.entrySet()) {

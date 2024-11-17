@@ -1,6 +1,6 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.base.Metrics;
+import one.tranic.goldpiglin.metrics.Metrics;
 import one.tranic.goldpiglin.data.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +20,7 @@ public class GoldPiglin extends JavaPlugin {
         if (is120) {
             getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_1.Target(), this);
         } else if (is126) {
-            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_6.Target(), this);
+            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_5.Target(), this);
         }
         metrics = new Metrics(this, 23906);
     }

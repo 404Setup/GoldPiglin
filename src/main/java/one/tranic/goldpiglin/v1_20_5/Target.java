@@ -1,7 +1,6 @@
-package one.tranic.goldpiglin.v1_20_6;
+package one.tranic.goldpiglin.v1_20_5;
 
 import de.tr7zw.nbtapi.NBT;
-import de.tr7zw.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.nbtapi.iface.ReadableNBT;
 import one.tranic.goldpiglin.base.BaseTarget;
 import org.bukkit.entity.Piglin;
@@ -22,10 +21,9 @@ public class Target extends BaseTarget {
             if (armors.length == 0) return;
             for (ItemStack armor : armors) {
                 if (armor == null) continue;
-                ReadWriteNBT nbt = NBT.itemStackToNBT(armor);
-                ReadableNBT comp = nbt.getCompound("components");
-                if (comp == null) continue;
-                ReadableNBT trim = comp.getCompound("minecraft:trim");
+                ReadableNBT nbt = NBT.itemStackToNBT(armor).getCompound("components");
+                if (nbt == null) continue;
+                ReadableNBT trim = nbt.getCompound("minecraft:trim");
                 if (trim != null && Objects.equals(trim.getString("material"), "minecraft:gold")) {
                     event.setCancelled(true);
                     break;

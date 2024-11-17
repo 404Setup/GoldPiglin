@@ -2,7 +2,6 @@ package one.tranic.goldpiglin.base;
 
 import one.tranic.goldpiglin.data.ExpiringHashMap;
 import one.tranic.goldpiglin.data.Scheduler;
-import one.tranic.goldpiglin.data.TargetEntry;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

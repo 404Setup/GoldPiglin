@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.data;
+package one.tranic.goldpiglin.base;
 
 import java.util.UUID;
 
