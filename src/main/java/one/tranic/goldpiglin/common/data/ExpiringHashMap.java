@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.data;
+package one.tranic.goldpiglin.common.data;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

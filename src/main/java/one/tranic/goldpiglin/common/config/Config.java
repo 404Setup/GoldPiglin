@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.config;
+package one.tranic.goldpiglin.common.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,9 +1,9 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.command.ReloadCommand;
-import one.tranic.goldpiglin.config.Config;
-import one.tranic.goldpiglin.data.Scheduler;
-import one.tranic.goldpiglin.metrics.Metrics;
+import one.tranic.goldpiglin.common.command.ReloadCommand;
+import one.tranic.goldpiglin.common.config.Config;
+import one.tranic.goldpiglin.common.data.Scheduler;
+import one.tranic.goldpiglin.common.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.java.JavaPlugin;

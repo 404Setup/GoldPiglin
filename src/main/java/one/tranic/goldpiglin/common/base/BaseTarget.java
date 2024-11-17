@@ -1,8 +1,8 @@
-package one.tranic.goldpiglin.base;
+package one.tranic.goldpiglin.common.base;
 
-import one.tranic.goldpiglin.config.Config;
-import one.tranic.goldpiglin.data.ExpiringHashMap;
-import one.tranic.goldpiglin.data.Scheduler;
+import one.tranic.goldpiglin.common.config.Config;
+import one.tranic.goldpiglin.common.data.ExpiringHashMap;
+import one.tranic.goldpiglin.common.data.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -47,18 +47,7 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            if (Config.getHatred().isNear()) {
-                List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-                for (Entity e : entitys) {
-                    if (e instanceof Player || !(e instanceof Piglin)) continue;
-                    if (Config.getHatred().isCanSee()) {
-                        boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
-                        if (!v) continue;
-                    }
-                    targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-                    return;
-                }
-            }
+            if (Config.getHatred().isNear() && getEntityStats(player)) return;
             targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
         }
     }
@@ -73,16 +62,7 @@ public class BaseTarget implements Listener {
                 block == Material.ANCIENT_DEBRIS ||
                 block == Material.GOLD_BLOCK) {
             Player player = event.getPlayer();
-            List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-            for (Entity e : entitys) {
-                if (e instanceof Player || !(e instanceof Piglin)) continue;
-                if (Config.getHatred().isCanSee()) {
-                    boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
-                    if (!v) continue;
-                }
-                targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-                return;
-            }
+            getEntityStats(player);
         }
     }
 
@@ -115,6 +95,8 @@ public class BaseTarget implements Listener {
         return false;
     }
 
+    // Spigot's native canSee seems to be not very sensitive, you should probably turn off the canSee setting.
+    // Or just enable canSee without enabling nativeCanSee
     private boolean canPlayerSeeEntity(Player player, LivingEntity entity) {
         Location playerLocation = player.getEyeLocation();
         Vector playerDirection = playerLocation.getDirection();
@@ -134,5 +116,19 @@ public class BaseTarget implements Listener {
 
         RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, maxDistance);
         return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < entityLocation.toVector().distance(playerLocation.toVector()));
+    }
+
+    private boolean getEntityStats(Player player) {
+        List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+        for (Entity e : entitys) {
+            if (e instanceof Player || !(e instanceof Piglin)) continue;
+            if (Config.getHatred().isCanSee()) {
+                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
+                if (!v) continue;
+            }
+            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+            return true;
+        }
+        return false;
     }
 }

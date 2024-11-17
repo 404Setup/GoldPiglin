@@ -1,6 +1,6 @@
-package one.tranic.goldpiglin.data;
+package one.tranic.goldpiglin.common.data;
 
-import one.tranic.goldpiglin.config.Config;
+import one.tranic.goldpiglin.common.config.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;

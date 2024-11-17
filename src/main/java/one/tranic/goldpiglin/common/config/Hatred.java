@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.config;
+package one.tranic.goldpiglin.common.config;
 
 public class Hatred {
     private long expirationTime = 25L;

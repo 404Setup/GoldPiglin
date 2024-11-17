@@ -1,6 +1,6 @@
-package one.tranic.goldpiglin.command;
+package one.tranic.goldpiglin.common.command;
 
-import one.tranic.goldpiglin.config.Config;
+import one.tranic.goldpiglin.common.config.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
