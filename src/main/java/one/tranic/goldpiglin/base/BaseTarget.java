@@ -46,23 +46,19 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            Scheduler.singleExecute(() -> {
-                if (Config.getHatred().isNear()) {
-                    List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-                    if (!entitys.isEmpty()) {
-                        for (Entity e : entitys) {
-                            if (e instanceof Player || !(e instanceof Piglin)) continue;
-                            if (Config.getHatred().isCanSee()) {
-                                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
-                                if (!v) continue;
-                            }
-                            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-                        }
-                        return;
+            if (Config.getHatred().isNear()) {
+                List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+                for (Entity e : entitys) {
+                    if (e instanceof Player || !(e instanceof Piglin)) continue;
+                    if (Config.getHatred().isCanSee()) {
+                        boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
+                        if (!v) continue;
                     }
+                    targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+                    return;
                 }
-                targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
-            });
+            }
+            targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
         }
     }
 

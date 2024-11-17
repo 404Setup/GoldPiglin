@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.List;
 
 public class Config {
-    private static Hatred hatred;
+    private static Hatred hatred = new Hatred();
     private static boolean useConcurrentMap = false;
 
     public static Hatred getHatred() {
