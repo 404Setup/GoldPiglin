@@ -11,6 +11,7 @@ import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
@@ -59,6 +60,29 @@ public class BaseTarget implements Listener {
                 }
             }
             targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
+        }
+    }
+
+    @EventHandler
+    public void onBreakBlock(BlockBreakEvent event) {
+        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        Material block = event.getBlock().getType();
+        if (block == Material.NETHER_GOLD_ORE ||
+                block == Material.GILDED_BLACKSTONE ||
+                block == Material.NETHER_QUARTZ_ORE ||
+                block == Material.ANCIENT_DEBRIS ||
+                block == Material.GOLD_BLOCK) {
+            Player player = event.getPlayer();
+            List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+            for (Entity e : entitys) {
+                if (e instanceof Player || !(e instanceof Piglin)) continue;
+                if (Config.getHatred().isCanSee()) {
+                    boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
+                    if (!v) continue;
+                }
+                targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+                return;
+            }
         }
     }
 
