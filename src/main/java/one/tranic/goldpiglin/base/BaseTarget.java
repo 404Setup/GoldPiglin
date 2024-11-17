@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BaseTarget implements Listener {
-    public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(15, 30);
+    public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(20, 30);
 
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
