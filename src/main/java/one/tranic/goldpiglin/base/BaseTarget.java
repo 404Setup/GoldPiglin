@@ -28,13 +28,13 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (targets.isEmpty()) return;
-        Scheduler.execute(() -> {
+        Scheduler.singleExecute(() -> {
             List<Map.Entry<UUID, TargetEntry>> ls = targets.filter((it) -> it.getValue().targetId() == event.getEntity().getUniqueId());
             if (ls.isEmpty()) return;
             for (Map.Entry<UUID, TargetEntry> entry : ls) {
                 targets.remove(entry.getKey());
             }
-        });
+        }); // Don't put it in the main thread // Dispatching to a queue instead of a new thread to avoid data contention
     }
 
     @EventHandler
