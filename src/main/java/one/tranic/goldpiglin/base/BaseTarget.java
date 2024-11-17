@@ -2,6 +2,7 @@ package one.tranic.goldpiglin.base;
 
 import one.tranic.goldpiglin.data.ExpiringHashMap;
 import one.tranic.goldpiglin.data.Scheduler;
+import org.bukkit.Material;
 import org.bukkit.entity.Piglin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
@@ -42,5 +44,31 @@ public class BaseTarget implements Listener {
     }
 
     @EventHandler
-    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {}
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
+            if (this.targets.get(entity.getUniqueId()) != null) return;
+            ItemStack[] armors = player.getInventory().getArmorContents();
+            if (hasGoldArmor(armors)) event.setCancelled(true);
+        }
+    }
+
+    private boolean hasGoldArmor(ItemStack[] armors) {
+        for (ItemStack armor : armors) {
+            if (armor == null || isGoldArmor(armor)) continue; // If it's golden armor, use vanilla behavior
+            if (readItemStack(armor)) return true;
+        }
+        return false;
+    }
+
+    private boolean isGoldArmor(ItemStack armor) {
+        Material type = armor.getType();
+        return type == Material.GOLDEN_BOOTS ||
+                type == Material.GOLDEN_HELMET ||
+                type == Material.GOLDEN_CHESTPLATE ||
+                type == Material.GOLDEN_LEGGINGS;
+    }
+
+    public boolean readItemStack(ItemStack itemStack) {
+        return false;
+    }
 }
