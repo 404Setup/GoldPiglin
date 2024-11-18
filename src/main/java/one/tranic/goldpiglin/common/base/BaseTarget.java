@@ -5,6 +5,7 @@ import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Piglin;
@@ -16,6 +17,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
@@ -56,14 +58,15 @@ public class BaseTarget implements Listener {
     public void onBreakBlock(BlockBreakEvent event) {
         if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Material block = event.getBlock().getType();
-        if (block == Material.NETHER_GOLD_ORE ||
-                block == Material.GILDED_BLACKSTONE ||
-                block == Material.NETHER_QUARTZ_ORE ||
-                block == Material.ANCIENT_DEBRIS ||
-                block == Material.GOLD_BLOCK) {
-            Player player = event.getPlayer();
-            getEntityStats(player);
-        }
+        if (isNetherOre(block)) getEntityStats(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        Block block = event.getClickedBlock();
+        if (block == null || block.getType() != Material.CHEST) return;
+        getEntityStats(event.getPlayer());
     }
 
     @EventHandler
@@ -73,6 +76,14 @@ public class BaseTarget implements Listener {
             ItemStack[] armors = player.getInventory().getArmorContents();
             if (hasGoldArmor(armors)) event.setCancelled(true);
         }
+    }
+
+    private boolean isNetherOre(Material block) {
+        return block == Material.NETHER_GOLD_ORE ||
+                block == Material.GILDED_BLACKSTONE ||
+                block == Material.NETHER_QUARTZ_ORE ||
+                block == Material.ANCIENT_DEBRIS ||
+                block == Material.GOLD_BLOCK;
     }
 
     private boolean hasGoldArmor(ItemStack[] armors) {
