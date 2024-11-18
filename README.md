@@ -3,6 +3,11 @@ When you wear armor with gold patterns, the effect is the same as wearing gold a
 
 This project is not completely finished yet, so there are usually some missing features.
 
+## Feature
+- Piglins will ignore you when wearing armor with gold patterns.
+- Emulate vanilla behavior [in v24.11.1]
+- Enhanced behaviors, such as eye tracking
+
 ## Usage
 ### Config
 ```yaml
