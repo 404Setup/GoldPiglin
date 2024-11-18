@@ -95,9 +95,13 @@ public class BaseTarget implements Listener {
         return false;
     }
 
+    private boolean canSee(Player player, LivingEntity entity) {
+        return Config.getHatred().isReversalCanSee() ? canSeeEntity(entity, player) : canSeeEntity(player, entity);
+    }
+
     // Spigot's native canSee seems to be not very sensitive, you should probably turn off the canSee setting.
     // Or just enable canSee without enabling nativeCanSee
-    private boolean canPlayerSeeEntity(Player player, LivingEntity entity) {
+    private boolean canSeeEntity(LivingEntity player, LivingEntity entity) {
         Location playerLocation = player.getEyeLocation();
         Vector playerDirection = playerLocation.getDirection();
         double viewAngle = 45;
@@ -123,7 +127,7 @@ public class BaseTarget implements Listener {
         for (Entity e : entitys) {
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
-                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canPlayerSeeEntity(player, (LivingEntity) e);
+                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canSee(player, (LivingEntity) e);
                 if (!v) continue;
             }
             targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));

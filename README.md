@@ -21,6 +21,8 @@ hatred:
     enabled: true
     # Use Spigot's own canSee API instead of GoldPiglin's line of sight calculation
     native: false
+    # Inverted line of sight calculations to calculate entity line of sight instead of player line of sight
+    reversal: false
 ```
 
 ### Permission

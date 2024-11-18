@@ -25,10 +25,12 @@ public class Config {
         config.addDefault("hatred.near.z", 6);
         config.addDefault("hatred.can-see.enabled", true);
         config.addDefault("hatred.can-see.native", false);
+        config.addDefault("hatred.can-see.reversal", false);
 
         config.setComments("hatred.near.enabled", List.of("Area-wide hatred, closer to vanilla behavior, but may take longer to calculate."));
         config.setComments("hatred.can-see.enabled", List.of("Whether only Piglin within the player's sight will trigger hatred"));
         config.setComments("hatred.can-see.native", List.of("Use Spigot's own canSee API instead of GoldPiglin's line of sight calculation"));
+        config.set("hatred.can-see.reversal", List.of("Inverted line of sight calculations to calculate entity line of sight instead of player line of sight"));
 
         config.options().copyDefaults(true);
         plugin.saveConfig();
@@ -47,6 +49,7 @@ public class Config {
         hatred.setNearZ(config.getInt("hatred.near.z"));
         hatred.setCanSee(config.getBoolean("hatred.can-see.enabled"));
         hatred.setNativeCanSee(config.getBoolean("hatred.can-see.native"));
+        hatred.setReversalCanSee(config.getBoolean("hatred.can-see.reversal"));
     }
 
     public static boolean isUseConcurrentMap() {

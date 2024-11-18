@@ -25,10 +25,8 @@ public class GoldPiglin extends JavaPlugin {
         Config.reload(this);
         if (is120) {
             getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_1.Target(), this);
-        } else if (is126) {
-            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_5.Target(), this);
         } else {
-            throw new IllegalStateException("GoldPiglin Plugin Not Supported");
+            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_5.Target(), this);
         }
 
         try {

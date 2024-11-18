@@ -9,6 +9,7 @@ public class Hatred {
     private int nearZ = 6;
     private boolean canSee = true;
     private boolean nativeCanSee = false;
+    private boolean reversalCanSee = false;
 
     public long getExpirationScannerTime() {
         return expirationScannerTime;
@@ -72,5 +73,13 @@ public class Hatred {
 
     public void setNativeCanSee(boolean nativeCanSee) {
         this.nativeCanSee = nativeCanSee;
+    }
+
+    public boolean isReversalCanSee() {
+        return reversalCanSee;
+    }
+
+    public void setReversalCanSee(boolean reversalCanSee) {
+        this.reversalCanSee = reversalCanSee;
     }
 }
