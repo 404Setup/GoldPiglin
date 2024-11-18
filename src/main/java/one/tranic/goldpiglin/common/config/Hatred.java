@@ -1,8 +1,8 @@
 package one.tranic.goldpiglin.common.config;
 
 public class Hatred {
-    private long expirationTime = 25L;
-    private long expirationScannerTime = 30L;
+    private long expirationTime = 20L;
+    private long expirationScannerTime = 40L;
     private boolean near = false;
     private int nearX = 6;
     private int nearY = 6;

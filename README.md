@@ -3,10 +3,31 @@ When you wear armor with gold patterns, the effect is the same as wearing gold a
 
 This project is not completely finished yet, so there are usually some missing features.
 
-## Support
-All Bukkit servers from spigot onwards.
+## Usage
+### Config
+```yaml
+use-concurrent-map: false
+hatred:
+  expiration-time: 20
+  expiration-scanner-time: 40
+  near:
+    # Area-wide hatred, closer to vanilla behavior, but may take longer to calculate.
+    enabled: false
+    x: 6
+    y: 6
+    z: 6
+  can-see:
+    # Whether only Piglin within the player's sight will trigger hatred
+    enabled: true
+    # Use Spigot's own canSee API instead of GoldPiglin's line of sight calculation
+    native: false
+```
 
-such as Spigot, Paper, Purpur, Folia...
+### Permission
+- goldpiglin.command.greload [default: OP]
+
+### Command
+- /goldpiglin:greload [/greload]
 
 ## License
 Use [Apache-2.0](https://github.com/404Setup/GoldPiglin?tab=Apache-2.0-1-ov-file#readme) as the license.
