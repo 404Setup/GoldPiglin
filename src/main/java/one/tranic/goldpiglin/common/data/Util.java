@@ -1,11 +1,9 @@
 package one.tranic.goldpiglin.common.data;
 
 import one.tranic.goldpiglin.common.config.Config;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -26,8 +24,22 @@ public class Util {
         return Config.isUseConcurrentMap() ? new ConcurrentHashMap<>() : (fastutil ? new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>() : new HashMap<>());
     }
 
+    public static <K, V> Map<K, V> newHashMap(@NotNull Map<K, V> map) {
+        return Config.isUseConcurrentMap() ? new ConcurrentHashMap<>(map) : (fastutil ? new it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<>(map) : new HashMap<>(map));
+    }
+
     public static <T> List<T> newArrayList() {
         return fastutil ? new it.unimi.dsi.fastutil.objects.ObjectArrayList<>() : new ArrayList<>();
+    }
+
+    @SafeVarargs
+    public static <T> List<T> newArrayList(@NotNull T... elements) {
+        if (fastutil) {
+            return new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(elements);
+        }
+        List<T> list = new ArrayList<>(elements.length);
+        Collections.addAll(list, elements);
+        return list;
     }
 
     public static <K, V> void entryForEach(Map<K, V> map, final Consumer<? super Map.Entry<K, V>> consumer) {

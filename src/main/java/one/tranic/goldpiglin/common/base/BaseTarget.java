@@ -94,7 +94,8 @@ public class BaseTarget implements Listener {
         boolean v = false;
         for (ItemStack armor : armors) {
             if (isGoldArmor(armor.getType())) {
-                v = false;break; // If it's golden armor, use vanilla behavior
+                v = false;
+                break; // If it's golden armor, use vanilla behavior
             }
             if (readItemStack(armor)) v = true;
         }
@@ -107,6 +108,7 @@ public class BaseTarget implements Listener {
                 armor == Material.GOLDEN_CHESTPLATE ||
                 armor == Material.GOLDEN_LEGGINGS;
     }
+
 
     public boolean readItemStack(ItemStack itemStack) {
         return false;
