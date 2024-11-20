@@ -90,18 +90,17 @@ public class BaseTarget implements Listener {
 
     private boolean hasGoldArmor(ItemStack[] armors) {
         for (ItemStack armor : armors) {
-            if (armor == null || isGoldArmor(armor)) continue; // If it's golden armor, use vanilla behavior
+            if (armor == null || isGoldArmor(armor.getType())) continue; // If it's golden armor, use vanilla behavior
             if (readItemStack(armor)) return true;
         }
         return false;
     }
 
-    private boolean isGoldArmor(ItemStack armor) {
-        Material type = armor.getType();
-        return type == Material.GOLDEN_BOOTS ||
-                type == Material.GOLDEN_HELMET ||
-                type == Material.GOLDEN_CHESTPLATE ||
-                type == Material.GOLDEN_LEGGINGS;
+    private boolean isGoldArmor(Material armor) {
+        return armor == Material.GOLDEN_BOOTS ||
+                armor == Material.GOLDEN_HELMET ||
+                armor == Material.GOLDEN_CHESTPLATE ||
+                armor == Material.GOLDEN_LEGGINGS;
     }
 
     public boolean readItemStack(ItemStack itemStack) {
@@ -125,11 +124,7 @@ public class BaseTarget implements Listener {
         Vector directionToEntity = entityLocation.toVector().subtract(playerLocation.toVector()).normalize();
         double angle = playerDirection.angle(directionToEntity);
 
-        if (angle > Math.toRadians(viewAngle)) {
-            return false;
-        }
-
-        if (playerLocation.distance(entityLocation) > maxDistance) return false;
+        if (angle > Math.toRadians(viewAngle) || playerLocation.distance(entityLocation) > maxDistance) return false;
 
         RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, maxDistance);
         return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < entityLocation.toVector().distance(playerLocation.toVector()));
