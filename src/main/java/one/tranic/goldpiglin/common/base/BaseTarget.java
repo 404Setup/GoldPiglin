@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -88,12 +89,16 @@ public class BaseTarget implements Listener {
                 block == Material.GOLD_BLOCK;
     }
 
-    private boolean hasGoldArmor(ItemStack[] armors) {
+    private boolean hasGoldArmor(@NotNull ItemStack[] armors) {
+        if (armors.length == 0) return false;
+        boolean v = false;
         for (ItemStack armor : armors) {
-            if (armor == null || isGoldArmor(armor.getType())) continue; // If it's golden armor, use vanilla behavior
-            if (readItemStack(armor)) return true;
+            if (isGoldArmor(armor.getType())) {
+                v = false;break; // If it's golden armor, use vanilla behavior
+            }
+            if (readItemStack(armor)) v = true;
         }
-        return false;
+        return v;
     }
 
     private boolean isGoldArmor(Material armor) {
