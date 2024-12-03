@@ -11,6 +11,8 @@ This project is not completely finished yet, so there are usually some missing f
 ## Usage
 ### Config
 ```yaml
+# NMS mode is only available in Paper
+use-nms: false
 use-concurrent-map: false
 hatred:
   expiration-time: 20
@@ -31,10 +33,12 @@ hatred:
 ```
 
 ### Permission
-- goldpiglin.command.greload [default: OP]
+- goldpiglin.command.reload [default: OP]
+- goldpiglin.command.version [default: OP]
+- goldpiglin.update_message [default: OP]
 
 ### Command
-- /goldpiglin:greload [/greload]
+- /goldpiglin:gpiglin <reload|version> [/gpiglin]
 
 ## License
 Use [Apache-2.0](https://github.com/404Setup/GoldPiglin?tab=Apache-2.0-1-ov-file#readme) as the license.
@@ -56,4 +60,4 @@ If you publish my work elsewhere, you need my permission first and you must redi
 
 ## Depend
 - Java21 at least
-- [NBT-API v2.13.2](https://www.spigotmc.org/resources/nbt-api.7939/)
+- [NBT-API v2.13.2 (Optional)](https://www.spigotmc.org/resources/nbt-api.7939/)

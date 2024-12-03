@@ -8,5 +8,9 @@ softdepend: [NBTAPI]
 authors: [404Setup]
 website: https://hangar.papermc.io/404
 permissions:
-  goldpiglin.command.greload:
+  goldpiglin.command.reload:
+    default: op
+  goldpiglin.command.version:
+    default: op
+  goldpiglin.update_message:
     default: op

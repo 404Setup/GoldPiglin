@@ -1,12 +1,14 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.common.exception.DependencyNotFoundException;
-import one.tranic.goldpiglin.common.exception.UnsupportedVersionException;
+import one.tranic.goldpiglin.bukkit.common.UpdateEvent;
 import one.tranic.goldpiglin.common.VersionEnum;
 import one.tranic.goldpiglin.common.VersionUtils;
-import one.tranic.goldpiglin.common.command.ReloadCommand;
+import one.tranic.goldpiglin.command.GPiglinCommand;
 import one.tranic.goldpiglin.common.config.Config;
+import one.tranic.goldpiglin.common.data.FetchVersion;
 import one.tranic.goldpiglin.common.data.Scheduler;
+import one.tranic.goldpiglin.common.exception.DependencyNotFoundException;
+import one.tranic.goldpiglin.common.exception.UnsupportedVersionException;
 import one.tranic.goldpiglin.common.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -16,7 +18,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 
 public class GoldPiglin extends JavaPlugin {
+    private static FetchVersion fetchVersion;
     private Metrics metrics;
+
+    public static FetchVersion getFetchVersion() {
+        return fetchVersion;
+    }
 
     @Override
     public void onEnable() {
@@ -24,6 +31,7 @@ public class GoldPiglin extends JavaPlugin {
         if (version == 0) {
             throw new UnsupportedVersionException("GoldPiglin cannot run on this version of the server!");
         }
+
         boolean is126 = version >= VersionEnum.V1_20_5.versionNum;
 
         Config.reload(this);
@@ -49,12 +57,20 @@ public class GoldPiglin extends JavaPlugin {
             commandMapField.setAccessible(true);
             SimpleCommandMap commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
 
-            commandMap.register("greload", "goldpiglin", new ReloadCommand(this));
+            commandMap.register("gpiglin", "goldpiglin", new GPiglinCommand(this));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         metrics = new Metrics(this, 23906);
+
+        fetchVersion = new FetchVersion(getDescription().getVersion());
+        if (fetchVersion.checkForUpdates()) {
+            getServer().getConsoleSender().sendMessage(fetchVersion.getUpdateMessage());
+        }
+        fetchVersion.run();
+
+        register(new UpdateEvent());
     }
 
     @Override
