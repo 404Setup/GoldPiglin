@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,8 @@ public class BaseTarget implements Listener {
     private boolean hasGoldArmor(@NotNull ItemStack[] armors) {
         if (armors.length == 0) return false;
         boolean v = false;
-        for (ItemStack armor : armors) {
+        for (@Nullable ItemStack armor : armors) {
+            if (armor == null) continue;
             if (isGoldArmor(armor.getType())) {
                 v = false;
                 break; // If it's golden armor, use vanilla behavior
