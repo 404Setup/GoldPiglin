@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.common.base;
+package one.tranic.goldpiglin.common;
 
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
@@ -114,6 +114,10 @@ public class BaseTarget implements Listener {
         return false;
     }
 
+    public boolean canSeeNative(Player player, Entity entity) {
+        return player.canSee(entity);
+    }
+
     private boolean canSee(Player player, LivingEntity entity) {
         return Config.getHatred().isReversalCanSee() ? canSeeEntity(entity, player) : canSeeEntity(player, entity);
     }
@@ -142,7 +146,7 @@ public class BaseTarget implements Listener {
         for (Entity e : entitys) {
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
-                boolean v = Config.getHatred().isNativeCanSee() ? player.canSee(e) : canSee(player, (LivingEntity) e);
+                boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
                 if (!v) continue;
             }
             targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));

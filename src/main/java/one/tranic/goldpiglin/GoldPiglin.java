@@ -6,6 +6,7 @@ import one.tranic.goldpiglin.common.data.Scheduler;
 import one.tranic.goldpiglin.common.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -22,11 +23,20 @@ public class GoldPiglin extends JavaPlugin {
             throw new IllegalStateException("GoldPiglin Plugin Not Supported");
         }
 
+        boolean isPaper = false;
+        try {
+            Class.forName("io.papermc.paper.command.MSPTCommand");
+            isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+
         Config.reload(this);
         if (is120) {
-            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_1.Target(), this);
+            if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_1.Target());
+            else register(new one.tranic.goldpiglin.v1_20_1.Target());
         } else {
-            getServer().getPluginManager().registerEvents(new one.tranic.goldpiglin.v1_20_5.Target(), this);
+            if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_6.Target());
+            else register(new one.tranic.goldpiglin.v1_20_5.Target());
         }
 
         try {
@@ -48,5 +58,9 @@ public class GoldPiglin extends JavaPlugin {
             metrics.shutdown();
         }
         Scheduler.shutdown();
+    }
+
+    private void register(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 }

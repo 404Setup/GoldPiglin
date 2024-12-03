@@ -2,7 +2,7 @@ package one.tranic.goldpiglin.v1_20_5;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.iface.ReadableNBT;
-import one.tranic.goldpiglin.common.base.BaseTarget;
+import one.tranic.goldpiglin.common.BaseTarget;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
