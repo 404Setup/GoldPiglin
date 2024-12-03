@@ -144,8 +144,8 @@ public class BaseTarget implements Listener {
     }
 
     private void getEntityStats(Player player) {
-        List<Entity> entitys = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-        for (Entity e : entitys) {
+        List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+        for (Entity e : entities) {
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
