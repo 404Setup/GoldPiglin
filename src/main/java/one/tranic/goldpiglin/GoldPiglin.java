@@ -1,6 +1,9 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.bukkit.v1_20_1.Target;
+import one.tranic.goldpiglin.common.exception.DependencyNotFoundException;
+import one.tranic.goldpiglin.common.exception.UnsupportedVersionException;
+import one.tranic.goldpiglin.common.VersionEnum;
+import one.tranic.goldpiglin.common.VersionUtils;
 import one.tranic.goldpiglin.common.command.ReloadCommand;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.Scheduler;
@@ -17,27 +20,28 @@ public class GoldPiglin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        String bukkit = Bukkit.getBukkitVersion();
-        boolean is126 = bukkit.contains("1.21") || bukkit.contains("1.20.5") || bukkit.contains("1.20.6");
-        boolean is120 = bukkit.contains("1.20") && !is126;
-        if (!is120 && !is126) {
-            throw new IllegalStateException("GoldPiglin Plugin Not Supported");
+        int version = VersionEnum.getVersion().versionNum;
+        if (version == 0) {
+            throw new UnsupportedVersionException("GoldPiglin cannot run on this version of the server!");
         }
-
-        boolean isPaper = false;
-        try {
-            Class.forName("io.papermc.paper.command.MSPTCommand");
-            isPaper = true;
-        } catch (ClassNotFoundException ignored) {
-        }
+        boolean is126 = version >= VersionEnum.V1_20_5.versionNum;
 
         Config.reload(this);
-        if (is120) {
-            if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_1.Target());
-            else register(new Target());
-        } else {
-            if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_6.Target());
+
+        if (!Config.isUseNms()) {
+            try {
+                Class.forName("de.tr7zw.nbtapi.NBT");
+            } catch (ClassNotFoundException e) {
+                throw new DependencyNotFoundException("useNms is not enabled, but dependency is not installed: NBTAPI!");
+            }
+        }
+
+        if (is126) {
+            if (VersionUtils.isPaper() && Config.isUseNms()) register(new one.tranic.goldpiglin.paper.v1_20_6.Target());
             else register(new one.tranic.goldpiglin.bukkit.v1_20_5.Target());
+        } else {
+            if (VersionUtils.isPaper() && Config.isUseNms()) register(new one.tranic.goldpiglin.paper.v1_20_1.Target());
+            else register(new one.tranic.goldpiglin.bukkit.v1_20_1.Target());
         }
 
         try {
