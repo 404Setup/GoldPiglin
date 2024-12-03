@@ -1,5 +1,6 @@
 package one.tranic.goldpiglin;
 
+import one.tranic.goldpiglin.bukkit.v1_20_1.Target;
 import one.tranic.goldpiglin.common.command.ReloadCommand;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.Scheduler;
@@ -33,10 +34,10 @@ public class GoldPiglin extends JavaPlugin {
         Config.reload(this);
         if (is120) {
             if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_1.Target());
-            else register(new one.tranic.goldpiglin.v1_20_1.Target());
+            else register(new Target());
         } else {
             if (isPaper) register(new one.tranic.goldpiglin.paper.v1_20_6.Target());
-            else register(new one.tranic.goldpiglin.v1_20_5.Target());
+            else register(new one.tranic.goldpiglin.bukkit.v1_20_5.Target());
         }
 
         try {

@@ -1,4 +1,4 @@
-package one.tranic.goldpiglin.v1_20_1;
+package one.tranic.goldpiglin.bukkit.v1_20_1;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.iface.ReadableNBT;
