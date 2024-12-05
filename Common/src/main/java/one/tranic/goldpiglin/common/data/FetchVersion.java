@@ -55,7 +55,7 @@ public class FetchVersion {
     }
 
     public String getResourceURL() {
-        return "https://www.spigotmc.org/resources/goldpiglin.120819/";
+        return "https://modrinth.com/plugin/goldpiglin";
     }
 
     public boolean checkForUpdates() {

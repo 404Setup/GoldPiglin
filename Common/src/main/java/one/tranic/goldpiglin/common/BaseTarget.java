@@ -3,6 +3,7 @@ package one.tranic.goldpiglin.common;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
+import one.tranic.goldpiglin.common.data.Util;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,7 +34,8 @@ public class BaseTarget implements Listener {
 
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Piglin entity) targets.remove(entity.getUniqueId());
+        if (event.getEntity() instanceof Piglin entity)
+            Scheduler.singleExecute(() -> targets.remove(entity.getUniqueId()));
     }
 
     @EventHandler
@@ -51,10 +53,8 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
-            if (Config.getHatred().isNear()) {
-                getEntityStats(player);
-            }
+            Scheduler.singleExecute(() -> targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId())));
+            if (Config.getHatred().isNear()) getEntityStats(player);
         }
     }
 
@@ -145,14 +145,18 @@ public class BaseTarget implements Listener {
 
     private void getEntityStats(Player player) {
         List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
+        List<Entity> finallyEntities = Util.newArrayList();
         for (Entity e : entities) {
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
                 if (!v) continue;
             }
-            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-            return;
+            finallyEntities.add(e);
         }
+        Scheduler.singleExecute(() -> {
+            for (Entity e : finallyEntities)
+                targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+        });
     }
 }
