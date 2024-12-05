@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "24.12.0.1"
+version = "24.12.1"
 
 allprojects {
     apply(plugin = "java")
