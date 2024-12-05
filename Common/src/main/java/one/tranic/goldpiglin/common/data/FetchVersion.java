@@ -14,6 +14,7 @@ public class FetchVersion {
     private final String oldVersion;
     private String newVersion;
     private Date lastUpdate = new Date();
+    private Thread updateThread;
 
     public FetchVersion(String local) {
         this.oldVersion = local;
@@ -25,13 +26,21 @@ public class FetchVersion {
     }
 
     public void run() {
-        Scheduler.execute(() -> {
+        updateThread = Thread.ofVirtual().unstarted(() -> {
             try {
                 TimeUnit.HOURS.sleep(2);
             } catch (Exception ignored) {
             }
             this.checkForUpdates();
         });
+        updateThread.setName("GoldPiglin Updater Thread");
+        updateThread.start();
+    }
+
+    public void stop() {
+        if (updateThread != null) {
+            updateThread.interrupt();
+        }
     }
 
     public String getUpdateMessage() {

@@ -78,6 +78,7 @@ public class GoldPiglin extends JavaPlugin {
         if (metrics != null) {
             metrics.shutdown();
         }
+        fetchVersion.stop();
         Scheduler.shutdown();
     }
 

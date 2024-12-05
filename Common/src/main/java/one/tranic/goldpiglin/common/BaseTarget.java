@@ -35,7 +35,7 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Piglin entity)
-            Scheduler.singleExecute(() -> targets.remove(entity.getUniqueId()));
+            targets.remove(entity.getUniqueId());
     }
 
     @EventHandler
@@ -44,7 +44,8 @@ public class BaseTarget implements Listener {
         Scheduler.singleExecute(() -> {
             List<Map.Entry<UUID, TargetEntry>> ls = targets.filter((it) -> it.getValue().targetId() == event.getEntity().getUniqueId());
             if (ls.isEmpty()) return;
-            for (Map.Entry<UUID, TargetEntry> entry : ls) {
+            for (int i = 0; i < ls.size(); i++) {
+                Map.Entry<UUID, TargetEntry> entry = ls.get(i);
                 targets.remove(entry.getKey());
             }
         }); // Don't put it in the main thread // Dispatching to a queue instead of a new thread to avoid data contention
@@ -53,7 +54,7 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            Scheduler.singleExecute(() -> targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId())));
+            targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
             if (Config.getHatred().isNear()) getEntityStats(player);
         }
     }
@@ -146,7 +147,8 @@ public class BaseTarget implements Listener {
     private void getEntityStats(Player player) {
         List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
         List<Entity> finallyEntities = Util.newArrayList();
-        for (Entity e : entities) {
+        for (int i = 0; i < entities.size(); i++) {
+            Entity e = entities.get(i);
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
@@ -154,9 +156,9 @@ public class BaseTarget implements Listener {
             }
             finallyEntities.add(e);
         }
-        Scheduler.singleExecute(() -> {
-            for (Entity e : finallyEntities)
-                targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-        });
+        for (int i = 0; i < finallyEntities.size(); i++) {
+            Entity e = finallyEntities.get(i);
+            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+        }
     }
 }
