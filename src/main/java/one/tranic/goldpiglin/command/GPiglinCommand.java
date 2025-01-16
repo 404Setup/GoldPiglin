@@ -2,7 +2,7 @@ package one.tranic.goldpiglin.command;
 
 import one.tranic.goldpiglin.GoldPiglin;
 import one.tranic.goldpiglin.common.config.Config;
-import one.tranic.goldpiglin.common.data.Util;
+import one.tranic.goldpiglin.common.data.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -63,7 +63,7 @@ public class GPiglinCommand extends Command {
 
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
-        List<String> list = Util.newArrayList();
+        List<String> list = Collections.newArrayList();
         if (args.length == 1) {
             if (sender.hasPermission("goldpiglin.command.reload")) list.add("reload");
             if (sender.hasPermission("goldpiglin.command.version")) list.add("version");

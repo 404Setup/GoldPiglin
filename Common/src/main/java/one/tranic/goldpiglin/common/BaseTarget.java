@@ -3,7 +3,7 @@ package one.tranic.goldpiglin.common;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
-import one.tranic.goldpiglin.common.data.Util;
+import one.tranic.goldpiglin.common.data.Collections;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -44,10 +44,8 @@ public class BaseTarget implements Listener {
         Scheduler.singleExecute(() -> {
             List<Map.Entry<UUID, TargetEntry>> ls = targets.filter((it) -> it.getValue().targetId() == event.getEntity().getUniqueId());
             if (ls.isEmpty()) return;
-            for (int i = 0; i < ls.size(); i++) {
-                Map.Entry<UUID, TargetEntry> entry = ls.get(i);
+            for (Map.Entry<UUID, TargetEntry> entry : ls)
                 targets.remove(entry.getKey());
-            }
         }); // Don't put it in the main thread // Dispatching to a queue instead of a new thread to avoid data contention
     }
 
@@ -146,9 +144,8 @@ public class BaseTarget implements Listener {
 
     private void getEntityStats(Player player) {
         List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-        List<Entity> finallyEntities = Util.newArrayList();
-        for (int i = 0; i < entities.size(); i++) {
-            Entity e = entities.get(i);
+        List<Entity> finallyEntities = Collections.newArrayList();
+        for (Entity e : entities) {
             if (e instanceof Player || !(e instanceof Piglin)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
@@ -156,9 +153,7 @@ public class BaseTarget implements Listener {
             }
             finallyEntities.add(e);
         }
-        for (int i = 0; i < finallyEntities.size(); i++) {
-            Entity e = finallyEntities.get(i);
+        for (Entity e : finallyEntities)
             targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
-        }
     }
 }

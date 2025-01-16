@@ -1,18 +1,18 @@
 package one.tranic.goldpiglin.common.data;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class ExpiringHashMap<K, V> {
+public class ExpiringHashMap<K, V> implements Map<K, V> {
     private final long expirationTime;
     private final Map<K, V> map;
     private final Map<K, Long> expirationMap;
 
     public ExpiringHashMap(long expirationTime, long expirationScannerTime) {
-        this.map = Util.newHashMap();
-        this.expirationMap = Util.newHashMap();
+        this.map = Collections.newHashMap();
+        this.expirationMap = Collections.newHashMap();
 
         this.expirationTime = expirationTime;
 
@@ -31,7 +31,7 @@ public class ExpiringHashMap<K, V> {
     private void removeExpiredEntries() {
         long currentTime = System.currentTimeMillis();
 
-        Util.removeIf(expirationMap, entry -> {
+        Collections.removeIf(expirationMap, entry -> {
             if (entry.getValue() < currentTime) {
                 map.remove(entry.getKey());
                 return true;
@@ -56,12 +56,26 @@ public class ExpiringHashMap<K, V> {
         }
     }
 
-    private void put(K key, V value) {
+    @Override
+    public V put(K key, V value) {
         map.put(key, value);
         expirationMap.put(key, System.currentTimeMillis() + expirationTime);
+        return value;
     }
 
-    public V get(K key) {
+    @Override
+    public void putAll(@NotNull Map<? extends K, ? extends V> m) {
+        long currentTime = System.currentTimeMillis();
+        for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
+            K key = entry.getKey();
+            V value = entry.getValue();
+            map.put(key, value);
+            expirationMap.put(key, currentTime + expirationTime);
+        }
+    }
+
+    @Override
+    public V get(Object key) {
         Long expiration = expirationMap.get(key);
         if (expiration != null && System.currentTimeMillis() > expiration) {
             remove(key);
@@ -71,20 +85,11 @@ public class ExpiringHashMap<K, V> {
     }
 
     public Iterator<Map.Entry<K, V>> iterator() {
-        List<Map.Entry<K, V>> validEntries = Util.newArrayList();
-        long currentTime = System.currentTimeMillis();
-
-        expirationMap.forEach((key, expiration) -> {
-            if (expiration > currentTime) {
-                validEntries.add(new SimpleEntry<>(key, map.get(key)));
-            }
-        });
-
-        return validEntries.iterator();
+        return entrySet().iterator();
     }
 
     public List<Map.Entry<K, V>> filter(java.util.function.Predicate<Map.Entry<K, V>> predicate) {
-        List<Map.Entry<K, V>> filteredEntries = Util.newArrayList();
+        List<Map.Entry<K, V>> filteredEntries = Collections.newArrayList();
         long currentTime = System.currentTimeMillis();
 
         expirationMap.forEach((key, expiration) -> {
@@ -99,26 +104,90 @@ public class ExpiringHashMap<K, V> {
         return filteredEntries;
     }
 
+    @Override
     public boolean isEmpty() {
         return map.isEmpty();
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        return false;
     }
 
     public int size() {
         return map.size();
     }
 
-    public void remove(K key) {
-        map.remove(key);
+    @Override
+    public V remove(Object key) {
         expirationMap.remove(key);
+        return map.remove(key);
     }
 
-    public boolean containsKey(K key) {
+    @Override
+    public boolean containsKey(Object key) {
         return get(key) != null;
     }
 
+    @Override
     public void clear() {
         map.clear();
         expirationMap.clear();
+    }
+
+    @Override
+    public @NotNull Set<K> keySet() {
+        Set<K> validEntries = Collections.newHashSet();
+        long currentTime = System.currentTimeMillis();
+
+        expirationMap.forEach((key, expiration) -> {
+            if (expiration > currentTime)
+                validEntries.add(key);
+        });
+
+        return validEntries;
+    }
+
+    @Override
+    public @NotNull Collection<V> values() {
+        List<V> validEntries = Collections.newArrayList();
+        long currentTime = System.currentTimeMillis();
+
+        expirationMap.forEach((key, expiration) -> {
+            if (expiration > currentTime)
+                validEntries.add(map.get(key));
+        });
+
+        return validEntries;
+    }
+
+    @Override
+    public @NotNull Set<Entry<K, V>> entrySet() {
+        Set<Entry<K, V>> validEntries = new HashSet<>();
+        long currentTime = System.currentTimeMillis();
+
+        expirationMap.forEach((key, expiration) -> {
+            if (expiration > currentTime) {
+                validEntries.add(new SimpleEntry<>(key, map.get(key)));
+            }
+        });
+
+        return validEntries;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExpiringHashMap<?, ?> that = (ExpiringHashMap<?, ?>) o;
+        return expirationTime == that.expirationTime &&
+                Objects.equals(map, that.map) &&
+                Objects.equals(expirationMap, that.expirationMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expirationTime, map, expirationMap);
     }
 
     public void set(K key, V value) {
