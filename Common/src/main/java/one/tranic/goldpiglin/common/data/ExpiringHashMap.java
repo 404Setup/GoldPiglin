@@ -18,7 +18,9 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
         Scheduler.execute(() -> {
             try {
-                while (true) {
+                for (;;) {
+                    if (Thread.currentThread().isInterrupted())
+                        return;
                     TimeUnit.SECONDS.sleep(expirationScannerTime);
                     removeExpiredEntries();
                 }
