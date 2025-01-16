@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("io.papermc.paperweight.userdev") version "1.7.5" apply false
+    id("com.gradleup.shadow") version "9.0.0-beta4" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11" apply false
 }
 
 group = "one.tranic"
@@ -11,7 +11,7 @@ version = "24.12.1"
 
 allprojects {
     apply(plugin = "java")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.gradleup.shadow")
 
     repositories {
         maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
