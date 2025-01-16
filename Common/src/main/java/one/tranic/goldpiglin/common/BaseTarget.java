@@ -52,7 +52,7 @@ public class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
-            targets.set(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
+            targets.put(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
             if (Config.getHatred().isNear()) getEntityStats(player);
         }
     }
@@ -120,25 +120,25 @@ public class BaseTarget implements Listener {
     }
 
     private boolean canSee(Player player, LivingEntity entity) {
-        return Config.getHatred().isReversalCanSee() ? canSeeEntity(entity, player) : canSeeEntity(player, entity);
+        return Config.getHatred().isReversalCanSee() ? isEntityVisible(entity, player) : isEntityVisible(player, entity);
     }
+
+    private static final double VIEW_ANGLE = 45.0;
+    private static final double MAX_DISTANCE = 50.0;
 
     // Spigot's native canSee seems to be not very sensitive, you should probably turn off the canSee setting.
     // Or just enable canSee without enabling nativeCanSee
-    private boolean canSeeEntity(LivingEntity player, LivingEntity entity) {
+    private boolean isEntityVisible(LivingEntity player, LivingEntity entity) {
         Location playerLocation = player.getEyeLocation();
         Vector playerDirection = playerLocation.getDirection();
-        double viewAngle = 45;
-        double maxDistance = 50;
-
         Location entityLocation = entity.getLocation().add(0, entity.getHeight() / 2, 0);
-
         Vector directionToEntity = entityLocation.toVector().subtract(playerLocation.toVector()).normalize();
+
         double angle = playerDirection.angle(directionToEntity);
 
-        if (angle > Math.toRadians(viewAngle) || playerLocation.distance(entityLocation) > maxDistance) return false;
+        if (angle > Math.toRadians(VIEW_ANGLE) || playerLocation.distance(entityLocation) > MAX_DISTANCE) return false;
 
-        RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, maxDistance);
+        RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, MAX_DISTANCE);
         return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < entityLocation.toVector().distance(playerLocation.toVector()));
     }
 
@@ -154,6 +154,6 @@ public class BaseTarget implements Listener {
             finallyEntities.add(e);
         }
         for (Entity e : finallyEntities)
-            targets.set(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+            targets.put(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
     }
 }

@@ -190,10 +190,6 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         return Objects.hash(expirationTime, map, expirationMap);
     }
 
-    public void set(K key, V value) {
-        put(key, value);
-    }
-
     private record SimpleEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
         @Override
         public K getKey() {
