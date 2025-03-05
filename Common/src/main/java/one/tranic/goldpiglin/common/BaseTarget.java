@@ -3,7 +3,7 @@ package one.tranic.goldpiglin.common;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
-import one.tranic.goldpiglin.common.data.Collections;
+import one.tranic.t.utils.Collections;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class BaseTarget implements Listener {
+    private static final double VIEW_ANGLE = 45.0;
+    private static final double MAX_DISTANCE = 50.0;
     public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(Config.getHatred().getExpirationTime(), Config.getHatred().getExpirationScannerTime());
 
     @EventHandler
@@ -110,7 +112,6 @@ public class BaseTarget implements Listener {
                 armor == Material.GOLDEN_LEGGINGS;
     }
 
-
     public boolean readItemStack(ItemStack itemStack) {
         return false;
     }
@@ -122,9 +123,6 @@ public class BaseTarget implements Listener {
     private boolean canSee(Player player, LivingEntity entity) {
         return Config.getHatred().isReversalCanSee() ? isEntityVisible(entity, player) : isEntityVisible(player, entity);
     }
-
-    private static final double VIEW_ANGLE = 45.0;
-    private static final double MAX_DISTANCE = 50.0;
 
     // Spigot's native canSee seems to be not very sensitive, you should probably turn off the canSee setting.
     // Or just enable canSee without enabling nativeCanSee

@@ -2,7 +2,7 @@ package one.tranic.goldpiglin.command;
 
 import one.tranic.goldpiglin.GoldPiglin;
 import one.tranic.goldpiglin.common.config.Config;
-import one.tranic.goldpiglin.common.data.Collections;
+import one.tranic.t.utils.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

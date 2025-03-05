@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "25.01.1"
+version = "25.03.1"
 
 allprojects {
     apply(plugin = "java")
@@ -30,6 +30,8 @@ dependencies {
     implementation(project(":Common"))
     implementation(project(":Paper_V1_20_1"))
     implementation(project(":Paper_V1_20_6"))
+    implementation(project(":Paper_V1_21_3"))
+    implementation("one.tranic:t-utils:1.2.1")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
     compileOnly("org.jetbrains:annotations:24.1.0")
@@ -59,5 +61,21 @@ tasks.named<ProcessResources>("processResources") {
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
         expand(props)
+    }
+}
+
+val libPackage = "one.tranic.goldpiglin.libs"
+
+tasks.withType<ShadowJar> {
+    relocate("one.tranic.t", "${libPackage}.tlib")
+
+    minimize {
+        exclude("META-INF/**")
+        exclude("com/google/gson/**")
+        exclude("com/google/errorprone/**")
+        exclude("org/intellij/lang/annotations/**")
+        exclude("org/jetbrains/annotations/**")
+        exclude("org/checkerframework/**")
+        exclude("org/slf4j/**")
     }
 }

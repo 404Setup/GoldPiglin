@@ -1,9 +1,9 @@
 package one.tranic.goldpiglin;
 
 import one.tranic.goldpiglin.bukkit.common.UpdateEvent;
-import one.tranic.goldpiglin.common.VersionEnum;
-import one.tranic.goldpiglin.common.VersionUtils;
 import one.tranic.goldpiglin.command.GPiglinCommand;
+import one.tranic.goldpiglin.common.Version;
+import one.tranic.goldpiglin.common.VersionUtils;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.FetchVersion;
 import one.tranic.goldpiglin.common.data.Scheduler;
@@ -27,12 +27,8 @@ public class GoldPiglin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        int version = VersionEnum.getVersion().versionNum;
-        if (version == 0) {
+        if (Version.getMinor() < 20)
             throw new UnsupportedVersionException("GoldPiglin cannot run on this version of the server!");
-        }
-
-        boolean is126 = version >= VersionEnum.V1_20_5.versionNum;
 
         Config.reload(this);
 
@@ -44,13 +40,7 @@ public class GoldPiglin extends JavaPlugin {
             }
         }
 
-        if (is126) {
-            if (VersionUtils.isPaper() && Config.isUseNms()) register(new one.tranic.goldpiglin.paper.v1_20_6.Target());
-            else register(new one.tranic.goldpiglin.bukkit.v1_20_5.Target());
-        } else {
-            if (VersionUtils.isPaper() && Config.isUseNms()) register(new one.tranic.goldpiglin.paper.v1_20_1.Target());
-            else register(new one.tranic.goldpiglin.bukkit.v1_20_1.Target());
-        }
+        registerTargetHandler();
 
         try {
             Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
@@ -80,6 +70,31 @@ public class GoldPiglin extends JavaPlugin {
         }
         fetchVersion.stop();
         Scheduler.shutdown();
+    }
+
+    private void registerTargetHandler() {
+        Listener target = createTargetForCurrentVersion();
+        register(target);
+    }
+
+    private Listener createTargetForCurrentVersion() {
+        boolean isPaperWithNms = VersionUtils.isPaper() && Config.isUseNms();
+        boolean is1205 = Version.isMinimumVersion(20, 5);
+        boolean is1213 = Version.isMinimumVersion(21, 3);
+
+        if (is1213)
+            return isPaperWithNms
+                    ? new one.tranic.goldpiglin.paper.v1_21_3.Target()
+                    : new one.tranic.goldpiglin.bukkit.v1_20_5.Target();
+
+        if (is1205)
+            return isPaperWithNms
+                    ? new one.tranic.goldpiglin.paper.v1_20_6.Target()
+                    : new one.tranic.goldpiglin.bukkit.v1_20_5.Target();
+
+        return isPaperWithNms
+                ? new one.tranic.goldpiglin.paper.v1_20_1.Target()
+                : new one.tranic.goldpiglin.bukkit.v1_20_1.Target();
     }
 
     private void register(Listener listener) {

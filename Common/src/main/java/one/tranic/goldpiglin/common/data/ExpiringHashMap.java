@@ -1,5 +1,6 @@
 package one.tranic.goldpiglin.common.data;
 
+import one.tranic.t.utils.Collections;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -18,7 +19,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
         Scheduler.execute(() -> {
             try {
-                for (;;) {
+                for (; ; ) {
                     if (Thread.currentThread().isInterrupted())
                         return;
                     TimeUnit.SECONDS.sleep(expirationScannerTime);
@@ -86,12 +87,12 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         return map.get(key);
     }
 
-    public Iterator<Map.Entry<K, V>> iterator() {
+    public Iterator<Entry<K, V>> iterator() {
         return entrySet().iterator();
     }
 
     public List<Map.Entry<K, V>> filter(java.util.function.Predicate<Map.Entry<K, V>> predicate) {
-        List<Map.Entry<K, V>> filteredEntries = Collections.newArrayList();
+        List<Entry<K, V>> filteredEntries = Collections.newArrayList();
         long currentTime = System.currentTimeMillis();
 
         expirationMap.forEach((key, expiration) -> {
