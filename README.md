@@ -1,9 +1,9 @@
 # GoldPiglin
-When you wear armor with gold patterns, the effect is the same as wearing gold armor.
+> This project is not completely finished yet, so there are usually some missing features.
+>
+> GoldPiglin will not be ported to ModLoader, as there are already some mods with similar functionality there.
 
-This project is not completely finished yet, so there are usually some missing features.
-
-GoldPiglin will not be ported to ModLoader, as there are already some mods with similar functionality there.
+**When you wear armor with gold patterns, the effect is the same as wearing gold armor.**
 
 ## Feature
 - Piglins will ignore you when wearing armor with gold patterns.
