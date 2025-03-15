@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta4" apply false
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.11" apply false
+    id("com.gradleup.shadow") version "9.0.0-beta10" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.15" apply false
 }
 
 group = "one.tranic"
