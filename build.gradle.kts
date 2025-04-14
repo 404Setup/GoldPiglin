@@ -2,12 +2,12 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta10" apply false
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.15" apply false
+    id("com.gradleup.shadow") version "9.0.0-beta12" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16" apply false
 }
 
 group = "one.tranic"
-version = "25.03.1"
+version = "25.04.1"
 
 allprojects {
     apply(plugin = "java")
@@ -19,6 +19,7 @@ allprojects {
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.codemc.io/repository/maven-public/")
+        maven("https://jitpack.io")
     }
 }
 
@@ -28,12 +29,16 @@ repositories {
 
 dependencies {
     implementation(project(":Common"))
+    implementation(project(":Paper"))
     implementation(project(":Paper_V1_20_1"))
     implementation(project(":Paper_V1_20_6"))
     implementation(project(":Paper_V1_21_3"))
-    implementation("one.tranic:t-utils:1.2.1")
+    implementation("one.tranic:t-utils:1.2.2.1")
+    compileOnly("org.slf4j:slf4j-api:2.0.16")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
+    compileOnly("com.saicone.rtag:rtag:1.5.10")
+    compileOnly("com.saicone.rtag:rtag-item:1.5.10")
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
 }

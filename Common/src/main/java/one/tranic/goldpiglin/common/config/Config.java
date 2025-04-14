@@ -12,8 +12,7 @@ public class Config {
     private static YamlConfiguration configuration;
 
     private static Hatred hatred = new Hatred();
-    private static boolean useConcurrentMap = false;
-    private static boolean useNms = false;
+    private static String adapter;
 
     public static Hatred getHatred() {
         return hatred;
@@ -37,8 +36,7 @@ public class Config {
     }
 
     public static synchronized void save() throws IOException {
-        configuration.addDefault("use-nms", true);
-        configuration.addDefault("use-concurrent-map", false);
+        configuration.addDefault("adapter", "NBTAPI");
         configuration.addDefault("hatred.expiration-time", 20L);
         configuration.addDefault("hatred.expiration-scanner-time", 40L);
         configuration.addDefault("hatred.near.enabled", false);
@@ -49,7 +47,8 @@ public class Config {
         configuration.addDefault("hatred.can-see.native", false);
         configuration.addDefault("hatred.can-see.reversal", false);
 
-        configuration.setComments("use-nms", List.of("NMS mode is only available in Paper"));
+        configuration.setComments("adapter", List.of("Select according to your needs.",
+                "Supported adapters: Paper, NBTAPI, Rtag, FastNBT"));
         configuration.setComments("hatred.near.enabled", List.of("Area-wide hatred, closer to vanilla behavior, but may take longer to calculate."));
         configuration.setComments("hatred.can-see.enabled", List.of("Whether only Piglin within the player's sight will trigger hatred"));
         configuration.setComments("hatred.can-see.native", List.of("Use Spigot's own canSee API instead of GoldPiglin's line of sight calculation"));
@@ -60,8 +59,7 @@ public class Config {
     }
 
     private static synchronized void read() {
-        useNms = configuration.getBoolean("use-nms");
-        useConcurrentMap = configuration.getBoolean("use-concurrent-map");
+        adapter = configuration.getString("adapter");
         hatred = new Hatred();
         hatred.setExpirationTime(configuration.getLong("hatred.expiration-time"));
         hatred.setExpirationScannerTime(configuration.getLong("hatred.expiration-scanner-time"));
@@ -74,11 +72,7 @@ public class Config {
         hatred.setReversalCanSee(configuration.getBoolean("hatred.can-see.reversal"));
     }
 
-    public static boolean isUseConcurrentMap() {
-        return useConcurrentMap;
-    }
-
-    public static boolean isUseNms() {
-        return useNms;
+    public static String getAdapter() {
+        return adapter;
     }
 }

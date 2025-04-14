@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class BaseTarget implements Listener {
+public abstract class BaseTarget implements Listener {
     private static final double VIEW_ANGLE = 45.0;
     private static final double MAX_DISTANCE = 50.0;
     public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(Config.getHatred().getExpirationTime(), Config.getHatred().getExpirationScannerTime());
+    public final ExpiringHashMap<UUID, Boolean> playerCache = new ExpiringHashMap<>(10, 10);
+
+    public abstract String getTargetSign();
 
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
@@ -79,7 +82,12 @@ public class BaseTarget implements Listener {
         if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
             if (this.targets.get(entity.getUniqueId()) != null) return;
             ItemStack[] armors = player.getInventory().getArmorContents();
-            if (hasGoldArmor(armors)) event.setCancelled(true);
+            Boolean status = playerCache.get(player.getUniqueId());
+            if (status == null) {
+                status = hasGoldArmor(armors);
+                playerCache.put(player.getUniqueId(), status);
+            }
+            if (status) event.setCancelled(true);
         }
     }
 

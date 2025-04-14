@@ -4,12 +4,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
 import one.tranic.goldpiglin.common.BaseTarget;
+import one.tranic.goldpiglin.paper.PaperBase;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class Target extends BaseTarget {
+public class P1201_Target extends PaperBase {
+    @Override
+    public String getTargetSign() {
+        return "Paper 1.20.1";
+    }
+
     @Override
     public boolean canSeeNative(Player player, Entity target) {
         return BehaviorUtils.canSee((LivingEntity) target, (LivingEntity) player);
