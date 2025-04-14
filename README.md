@@ -13,9 +13,9 @@
 ## Usage
 ### Config
 ```yaml
-# NMS mode is only available in Paper
-use-nms: false
-use-concurrent-map: false
+# Select according to your needs.
+# Supported adapters: Paper, NBTAPI, Rtag
+adapter: NBTAPI
 hatred:
   expiration-time: 20
   expiration-scanner-time: 40
@@ -63,3 +63,4 @@ If you publish my work elsewhere, you need my permission first and you must redi
 ## Depend
 - Java21 at least
 - [NBT-API v2.13.2 (Optional)](https://www.spigotmc.org/resources/nbt-api.7939/)
+- [RTag v1.5.10 (Optional)](https://modrinth.com/plugin/rtag)
