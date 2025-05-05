@@ -16,6 +16,7 @@ package one.tranic.goldpiglin.common.metrics;
  */
 
 import one.tranic.t.thread.T2hread;
+import one.tranic.t.utils.Platform;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -38,10 +39,9 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
+@SuppressWarnings("unused")
 public class Metrics {
-
     private final Plugin plugin;
-
     private final MetricsBase metricsBase;
 
     /**
@@ -86,8 +86,8 @@ public class Metrics {
         boolean logResponseStatusText = config.getBoolean("logResponseStatusText", false);
         boolean isFolia = false;
         try {
-            isFolia = Class.forName("io.papermc.paper.threadedregions.RegionizedServer") != null;
-        } catch (Exception e) {
+            isFolia = Platform.isMultithreading();
+        } catch (Exception ignored) {
         }
         metricsBase =
                 new // See https://github.com/Bastian/bstats-metrics/pull/126

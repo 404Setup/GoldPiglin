@@ -1,7 +1,6 @@
 package one.tranic.goldpiglin.bukkit.rtag.v1_20_1;
 
 import com.saicone.rtag.RtagItem;
-import one.tranic.goldpiglin.common.BaseTarget;
 import one.tranic.goldpiglin.paper.PaperBase;
 import org.bukkit.inventory.ItemStack;
 

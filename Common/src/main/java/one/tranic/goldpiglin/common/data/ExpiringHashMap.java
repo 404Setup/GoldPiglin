@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("unused")
 public class ExpiringHashMap<K, V> implements Map<K, V> {
     private final long expirationTime;
     private final Map<K, V> map;

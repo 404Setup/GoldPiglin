@@ -2,6 +2,7 @@ package one.tranic.goldpiglin.common;
 
 import org.bukkit.Bukkit;
 
+@SuppressWarnings("unused")
 public class Version {
     private static final String VERSION_SEPARATOR = "-";
     private static final String VERSION_DELIMITER = "\\.";

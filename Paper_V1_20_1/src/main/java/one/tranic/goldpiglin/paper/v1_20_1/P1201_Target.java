@@ -3,7 +3,6 @@ package one.tranic.goldpiglin.paper.v1_20_1;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtils;
-import one.tranic.goldpiglin.common.BaseTarget;
 import one.tranic.goldpiglin.paper.PaperBase;
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
