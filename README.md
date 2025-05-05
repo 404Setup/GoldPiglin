@@ -46,11 +46,6 @@ hatred:
 ## License
 Use [Apache-2.0](https://github.com/404Setup/GoldPiglin?tab=Apache-2.0-1-ov-file#readme) as the license.
 
-Commercial use of this plugin is strictly prohibited, whether direct or indirect (including but not limited to: selling
-the plugin's source code/binary builds/access links/technical support for money or virtual currency; inducing others to
-pay to join your community where you provide the plugin's source code/binary builds/access links/technical support;
-etc.).
-
 Any redistribution is prohibited (including but not limited to: recreating pages about this plugin anywhere;
 redistributing binary builds of this plugin; including this plugin in server modpacks distributed to others; etc.).
 
