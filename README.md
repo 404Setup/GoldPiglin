@@ -61,6 +61,6 @@ If you publish my work elsewhere, you need my permission first and you must redi
 [Gitlab - GoldPiglin](https://gitlab.com/404Setup/GoldPiglin/-/releases)
 
 ## Depend
-- Java21 at least
+- Java17 at least (**Java 21 is recommended**)
 - [NBT-API v2.13.2 (Optional)](https://www.spigotmc.org/resources/nbt-api.7939/)
 - [RTag v1.5.10 (Optional)](https://modrinth.com/plugin/rtag)
