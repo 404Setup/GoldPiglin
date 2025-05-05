@@ -21,10 +21,20 @@ import java.lang.reflect.Field;
 public class GoldPiglin extends JavaPlugin {
     public static final org.slf4j.Logger logger = LoggerFactory.getLogger("GoldPiglin");
     private static FetchVersion fetchVersion;
+    private static String targetSign;
+    private static GoldPiglin instance;
     private Metrics metrics;
 
     public static FetchVersion getFetchVersion() {
         return fetchVersion;
+    }
+
+    public static GoldPiglin getPlugin() {
+        return instance;
+    }
+
+    public static String getTargetSign() {
+        return targetSign;
     }
 
     @Override
@@ -32,6 +42,7 @@ public class GoldPiglin extends JavaPlugin {
         if (Version.getMinor() < 20)
             throw new UnsupportedVersionException("GoldPiglin cannot run on this version of the server!");
 
+        instance = this;
         Config.reload(this);
 
         registerTargetHandler();
@@ -72,8 +83,9 @@ public class GoldPiglin extends JavaPlugin {
         BaseTarget target = createTargetForCurrentVersion();
         if (target == null)
             throw new UnsupportedVersionException("GoldPiglin could not find any available adapters on this server!");
+        targetSign = target.getTargetSign();
         logger.info("GoldPiglin is running on {}, Adapter: {}",
-                Bukkit.getServer().getName(), target.getTargetSign());
+                Bukkit.getServer().getName(), targetSign);
         register(target);
     }
 
