@@ -43,34 +43,74 @@ public class GPiglinCommand extends Command {
         return true;
     }
 
+    private TextComponent createLinkComponent(String prefix, String url, String hoverText) {
+        TextComponent prefixComponent = new TextComponent(prefix);
+        prefixComponent.setColor(ChatColor.YELLOW.asBungee());
+
+        TextComponent linkComponent = new TextComponent(url);
+        linkComponent.setUnderlined(true);
+        linkComponent.setColor(ChatColor.AQUA.asBungee());
+        linkComponent.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        linkComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder(hoverText).create()));
+
+        TextComponent fullComponent = new TextComponent("");
+        fullComponent.addExtra(prefixComponent);
+        fullComponent.addExtra(linkComponent);
+
+        return fullComponent;
+    }
+
     private TextComponent createVersionComponent() {
         TextComponent versionPrefix = new TextComponent("Plugin Version: ");
         versionPrefix.setColor(ChatColor.YELLOW.asBungee());
 
         TextComponent versionNumber = new TextComponent(GoldPiglin.getPlugin().getDescription().getVersion());
         versionNumber.setColor(ChatColor.AQUA.asBungee());
+        versionNumber.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder("Click to download update").create()));
+        versionNumber.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                GoldPiglin.getFetchVersion().getResourceURL()));
+
+        TextComponent fullMsg = new TextComponent("");
+        fullMsg.addExtra(versionPrefix);
+        fullMsg.addExtra(versionNumber);
 
         TextComponent space = new TextComponent(" ");
-
         TextComponent star = new TextComponent("*");
         star.setColor(ChatColor.WHITE.asBungee());
 
         TextComponent updateText = new TextComponent("(Update available [Click to download update])");
         updateText.setColor(ChatColor.YELLOW.asBungee());
+        updateText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder("Click to download update").create()));
+        updateText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
+                GoldPiglin.getFetchVersion().getResourceURL()));
 
-        updateText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to download update").create()));
-
-        updateText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, GoldPiglin.getFetchVersion().getResourceURL()));
-
-        TextComponent fullMsg = new TextComponent("");
-        fullMsg.addExtra(versionPrefix);
-        fullMsg.addExtra(versionNumber);
         fullMsg.addExtra(space);
         fullMsg.addExtra(star);
         fullMsg.addExtra(space);
         fullMsg.addExtra(updateText);
 
         return fullMsg;
+    }
+
+    private TextComponent createGithubComponent() {
+        return createLinkComponent("Github: ",
+                "https://github.com/404Setup/GoldPiglin",
+                "Github link");
+    }
+
+    private TextComponent createDiscordComponent() {
+        return createLinkComponent("Discord: ",
+                "https://discord.gg/PxgFqNmR2h",
+                "Discord link");
+    }
+
+    private TextComponent createPatreonComponent() {
+        return createLinkComponent("Patreon: ",
+                "https://www.patreon.com/tranic",
+                "Patreon link");
     }
 
     private void execute(@NotNull CommandSender sender) {
@@ -89,55 +129,11 @@ public class GPiglinCommand extends Command {
         } else
             sender.sendMessage(ChatColor.YELLOW + "Plugin Version: " + ChatColor.AQUA + GoldPiglin.getPlugin().getDescription().getVersion() + ChatColor.YELLOW + " (Latest)");
 
-        sender.sendMessage(ChatColor.YELLOW + "Driver: " + ChatColor.AQUA + GoldPiglin.getTargetSign());
+        sender.sendMessage(ChatColor.YELLOW + "Adapter: " + ChatColor.AQUA + GoldPiglin.getTargetSign());
 
-        // Github
-        TextComponent prefix1 = new TextComponent("Github: ");
-        prefix1.setColor(ChatColor.YELLOW.asBungee());
-
-        TextComponent link1 = new TextComponent("https://github.com/404Setup/GoldPiglin");
-        link1.setUnderlined(true);
-        link1.setColor(ChatColor.AQUA.asBungee());
-        link1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/404Setup/GoldPiglin"));
-        link1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Github link").create()));
-
-        TextComponent fullMsg1 = new TextComponent("");
-        fullMsg1.addExtra(prefix1);
-        fullMsg1.addExtra(link1);
-
-        sender.spigot().sendMessage(fullMsg1);
-
-        // Discord
-        TextComponent prefix2 = new TextComponent("Discord: ");
-        prefix2.setColor(ChatColor.YELLOW.asBungee());
-
-        TextComponent link2 = new TextComponent("https://discord.gg/PxgFqNmR2h");
-        link2.setUnderlined(true);
-        link2.setColor(ChatColor.AQUA.asBungee());
-        link2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://discord.gg/PxgFqNmR2h"));
-        link2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Discord link").create()));
-
-        TextComponent fullMsg2 = new TextComponent("");
-        fullMsg2.addExtra(prefix2);
-        fullMsg2.addExtra(link2);
-
-        sender.spigot().sendMessage(fullMsg2);
-
-        // Patreon
-        TextComponent prefix3 = new TextComponent("Patreon: ");
-        prefix3.setColor(ChatColor.YELLOW.asBungee());
-
-        TextComponent link3 = new TextComponent("https://www.patreon.com/tranic");
-        link3.setUnderlined(true);
-        link3.setColor(ChatColor.AQUA.asBungee());
-        link3.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/tranic"));
-        link3.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Patreon link").create()));
-
-        TextComponent fullMsg3 = new TextComponent("");
-        fullMsg3.addExtra(prefix3);
-        fullMsg3.addExtra(link3);
-
-        sender.spigot().sendMessage(fullMsg3);
+        sender.spigot().sendMessage(createGithubComponent());
+        sender.spigot().sendMessage(createDiscordComponent());
+        sender.spigot().sendMessage(createPatreonComponent());
     }
 
     private void executeReload(@NotNull CommandSender sender) {
