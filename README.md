@@ -16,6 +16,7 @@
 # Select according to your needs.
 # Supported adapters: Paper, NBTAPI, Rtag
 adapter: NBTAPI
+update-message: true
 hatred:
   expiration-time: 20
   expiration-scanner-time: 40
