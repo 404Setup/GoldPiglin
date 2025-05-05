@@ -80,8 +80,8 @@ public class GPiglinCommand extends Command {
         TextComponent star = new TextComponent("*");
         star.setColor(ChatColor.WHITE.asBungee());
 
-        TextComponent updateText = new TextComponent("(Update available [Click to download update])");
-        updateText.setColor(ChatColor.YELLOW.asBungee());
+        TextComponent updateText = new TextComponent("(Update available)");
+        updateText.setColor(ChatColor.GOLD.asBungee());
         updateText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder("Click to download update").create()));
         updateText.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
