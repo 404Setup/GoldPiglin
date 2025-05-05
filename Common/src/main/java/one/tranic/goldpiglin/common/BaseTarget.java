@@ -33,7 +33,7 @@ public abstract class BaseTarget implements Listener {
     private static final double VIEW_ANGLE = 45.0;
     private static final double MAX_DISTANCE = 50.0;
     public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(Config.getHatred().getExpirationTime(), Config.getHatred().getExpirationScannerTime());
-    public final ExpiringHashMap<UUID, Boolean> playerCache = new ExpiringHashMap<>(10, 10);
+    public final ExpiringHashMap<UUID, Boolean> playerCache = new ExpiringHashMap<>(120, 24);
 
     public abstract String getTargetSign();
 
