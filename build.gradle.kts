@@ -2,12 +2,12 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta12" apply false
+    id("com.gradleup.shadow") version "9.0.0-beta13" apply false
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.16" apply false
 }
 
 group = "one.tranic"
-version = "25.04.1"
+version = "25.05.1"
 
 allprojects {
     apply(plugin = "java")
@@ -21,6 +21,10 @@ allprojects {
         maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://jitpack.io")
     }
+
+    dependencies {
+        compileOnly("one.tranic:t-thread:1.0.1")
+    }
 }
 
 repositories {
@@ -33,7 +37,8 @@ dependencies {
     implementation(project(":Paper_V1_20_1"))
     implementation(project(":Paper_V1_20_6"))
     implementation(project(":Paper_V1_21_3"))
-    implementation("one.tranic:t-utils:1.2.2.1")
+    implementation("one.tranic:t-utils:1.2.3")
+    implementation("one.tranic:t-thread:1.0.1")
     compileOnly("org.slf4j:slf4j-api:2.0.16")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
@@ -43,9 +48,10 @@ dependencies {
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
 }
 
-val targetJavaVersion = 21
+val targetJavaVersion = 17
 
 java {
+    disableAutoTargetJvm()
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion

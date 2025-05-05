@@ -1,28 +1,18 @@
 package one.tranic.goldpiglin.common.data;
 
-import java.util.concurrent.*;
+import one.tranic.t.thread.T2hread;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Scheduler {
-    private static final ExecutorService exec = Executors.newVirtualThreadPerTaskExecutor();
-    private static final ExecutorService singleExecutor = new ThreadPoolExecutor(
-            1,
-            1,
-            0L, TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<>(15),
-            Thread.ofVirtual().factory(),
-            new ThreadPoolExecutor.CallerRunsPolicy()
-    );
+    private static final ExecutorService executor = Executors.newCachedThreadPool(T2hread.newVirtualThreadFactoryOrDefault());
 
     public static void execute(Runnable runnable) {
-        exec.submit(runnable);
-    }
-
-    public static void singleExecute(Runnable runnable) {
-        singleExecutor.submit(runnable);
+        executor.submit(runnable);
     }
 
     public static void shutdown() {
-        exec.shutdown();
-        singleExecutor.shutdown();
+        executor.shutdown();
     }
 }

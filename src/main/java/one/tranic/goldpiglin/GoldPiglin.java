@@ -42,9 +42,8 @@ public class GoldPiglin extends JavaPlugin {
         metrics = new Metrics(this, 23906);
 
         fetchVersion = new FetchVersion(getDescription().getVersion());
-        if (fetchVersion.checkForUpdates()) {
+        if (fetchVersion.checkForUpdates())
             getServer().getConsoleSender().sendMessage(fetchVersion.getUpdateMessage());
-        }
         fetchVersion.run();
 
         register(new UpdateEvent());

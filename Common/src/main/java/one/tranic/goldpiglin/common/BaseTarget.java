@@ -46,7 +46,7 @@ public abstract class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         if (targets.isEmpty()) return;
-        Scheduler.singleExecute(() -> {
+        Scheduler.execute(() -> {
             List<Map.Entry<UUID, TargetEntry>> ls = targets.filter((it) -> it.getValue().targetId() == event.getEntity().getUniqueId());
             if (ls.isEmpty()) return;
             for (Map.Entry<UUID, TargetEntry> entry : ls)

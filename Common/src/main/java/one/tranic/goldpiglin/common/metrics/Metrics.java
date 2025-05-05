@@ -15,6 +15,7 @@ package one.tranic.goldpiglin.common.metrics;
  * Violations will result in a ban of your plugin and account from bStats.
  */
 
+import one.tranic.t.thread.T2hread;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -242,7 +243,8 @@ public class Metrics {
                     new ScheduledThreadPoolExecutor(
                             1,
                             task -> {
-                                Thread thread = Thread.ofVirtual().name("bStats-Metrics").unstarted(task);
+                                Thread thread = T2hread.newVirtualThreadFactoryOrDefault().newThread(task);
+                                thread.setName("bStats-Metrics");
                                 thread.setDaemon(true);
                                 return thread;
                             });
