@@ -18,7 +18,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
         this.expirationTime = expirationTime;
 
-        Scheduler.execute(() -> {
+        Scheduler.asyncExecute(() -> {
             try {
                 for (; ; ) {
                     if (Thread.currentThread().isInterrupted())
@@ -35,13 +35,18 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     private void removeExpiredEntries() {
         long currentTime = System.currentTimeMillis();
 
-        Collections.removeIf(expirationMap, entry -> {
+        List<K> keysToRemove = Collections.newArrayList();
+
+        for (Entry<K, Long> entry : expirationMap.entrySet()) {
             if (entry.getValue() < currentTime) {
-                map.remove(entry.getKey());
-                return true;
+                keysToRemove.add(entry.getKey());
             }
-            return false;
-        });
+        }
+
+        for (K key : keysToRemove) {
+            expirationMap.remove(key);
+            map.remove(key);
+        }
 
         // Two-way balance to avoid strange problems
         if (map.size() != expirationMap.size()) {
@@ -56,7 +61,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     @Override
     public V put(K key, V value) {
         map.put(key, value);
-        expirationMap.put(key, System.currentTimeMillis() + expirationTime);
+        expirationMap.put(key, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expirationTime));
         return value;
     }
 
@@ -67,7 +72,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
             K key = entry.getKey();
             V value = entry.getValue();
             map.put(key, value);
-            expirationMap.put(key, currentTime + expirationTime);
+            expirationMap.put(key, currentTime + TimeUnit.SECONDS.toMillis(expirationTime));
         }
     }
 
