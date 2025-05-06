@@ -3,12 +3,12 @@ package one.tranic.goldpiglin.bukkit;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtil;
-import one.tranic.goldpiglin.common.GoldPiglinLogger;
-import one.tranic.goldpiglin.common.config.Config;
 import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Objects;
 
 public class V1_20_R2_Spigot extends BukkitBase {
     @Override
@@ -26,14 +26,7 @@ public class V1_20_R2_Spigot extends BukkitBase {
         net.minecraft.world.item.ItemStack item = CraftItemStack.asNMSCopy(itemStack);
 
         NBTTagCompound nbt = item.v();
-        if (nbt == null) {
-            if (Config.isDebug())
-                GoldPiglinLogger.logger.info("NBT tag is null for {}", itemStack.getType());
-            return false;
-        }
-        var b = nbt.p("Trim").l("material") == "minecraft:gold";
-        if (Config.isDebug())
-            GoldPiglinLogger.logger.info("NBT tag is {} for {}", b, itemStack.getType());
-        return b;
+        if (nbt == null) return false;
+        return Objects.equals(nbt.p("Trim").l("material"), "minecraft:gold");
     }
 }

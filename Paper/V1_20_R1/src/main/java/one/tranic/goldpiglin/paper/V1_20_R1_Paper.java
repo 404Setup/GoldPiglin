@@ -24,6 +24,6 @@ public class V1_20_R1_Paper extends PaperBase {
         net.minecraft.world.item.ItemStack item = CraftItemStack.unwrap(itemStack);
         CompoundTag nbt = item.getTag();
         if (nbt == null) return false;
-        return nbt.getCompound("Trim").getString("material") == "minecraft:gold";
+        return nbt.getCompound("Trim").getString("material").equals("minecraft:gold");
     }
 }
