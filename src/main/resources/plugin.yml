@@ -6,7 +6,7 @@ folia-supported: true
 load: STARTUP
 softdepend: [Rtag, NBTAPI]
 authors: [404Setup]
-website: https://hangar.papermc.io/404
+website: https://github.com/404Setup/GoldPiglin
 permissions:
   goldpiglin.command.reload:
     default: op
