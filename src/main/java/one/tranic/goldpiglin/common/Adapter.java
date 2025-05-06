@@ -12,6 +12,7 @@ import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.paper.v1_20_1.P1201_Target;
 import one.tranic.goldpiglin.paper.v1_20_6.P1206_Target;
 import one.tranic.goldpiglin.paper.v1_21_3.P1213_Target;
+import one.tranic.t.utils.Platform;
 import one.tranic.t.utils.Reflect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ public enum Adapter {
         @Override
         public BaseTarget createTarget() {
             boolean is1205 = Version.isMinimumVersion(20, 5);
-            boolean paper = VersionUtils.isPaper();
+            boolean paper = Platform.get() != Platform.Spigot;
 
             if (is1205) return paper ? new N1205_Paper() : new N1205_Bukkit();
             return paper ? new N1201_Paper() : new N1201_Bukkit();
@@ -44,7 +45,7 @@ public enum Adapter {
         @Override
         public BaseTarget createTarget() {
             boolean is1205 = Version.isMinimumVersion(20, 5);
-            boolean paper = VersionUtils.isPaper();
+            boolean paper = Platform.get() != Platform.Spigot;
 
             if (is1205) return paper ? new R1205_Paper() : new R1205_Bukkit();
             return paper ? new R1201_Paper() : new R1201_Bukkit();
@@ -60,7 +61,7 @@ public enum Adapter {
         this.adapterName = name;
         this.adapterClass = adapterClass;
         this.isPresent = Objects.equals(this.adapterName, "Paper") ?
-                VersionUtils.isPaper() : Reflect.hasClass(adapterClass);
+                Platform.get() != Platform.Spigot : Reflect.hasClass(adapterClass);
     }
 
     public static @NotNull Adapter getAdapter() {
