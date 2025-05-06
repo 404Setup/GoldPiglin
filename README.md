@@ -21,7 +21,6 @@
 - NBTAPI 2.13.2
 - RTag 1.5.10
 
-
 ## Usage
 ### Config
 ```yaml
