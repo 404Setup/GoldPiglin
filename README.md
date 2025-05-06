@@ -22,7 +22,6 @@
 - RTag 1.5.10
 
 
-
 ## Usage
 ### Config
 ```yaml
