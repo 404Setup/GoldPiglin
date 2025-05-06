@@ -56,11 +56,9 @@ redistributing binary builds of this plugin; including this plugin in server mod
 
 [SpigotForum - GoldPiglin](https://www.spigotmc.org/resources/goldpiglin.120819)
 
-[Hangar - GoldPiglin](https://hangar.papermc.io/404/goldpiglin)
+[Hangar - GoldPiglin](https://hangar.papermc.io/Goal/goldpiglin)
 
 [Github - GoldPiglin](https://github.com/404Setup/GoldPiglin/releases)
-
-[Gitlab - GoldPiglin](https://gitlab.com/404Setup/GoldPiglin/-/releases)
 
 ## Depend
 - Java17 at least (**Java 21 is recommended**)
