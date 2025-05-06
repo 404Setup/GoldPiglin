@@ -10,12 +10,29 @@
 - Emulate vanilla behavior [in v24.11.1]
 - Enhanced behaviors, such as eye tracking
 
+## Adapter
+> **It is recommended to use an adapter with NMS mode**
+> - All adapters should behave exactly the same.
+> - The Spigot adapter is only available in Spigot and its forks (not in Paper).
+> - The Paper adapter is only available in Paper and its forks (not in Spigot).
+> 
+- Spigot (NMS Mode) 1.20.1-1.21.5
+- Paper (NMS Mode) 1.20.1-1.21.5
+- NBTAPI 2.13.2
+- RTag 1.5.10
+
+
+
 ## Usage
 ### Config
 ```yaml
 # Select according to your needs.
-# Supported adapters: Paper, NBTAPI, Rtag
+# Supported adapters: Spigot, Paper, NBTAPI, Rtag
+# The Spigot adapter is compatible with 1.20.1-1.21.5, if Minecraft releases
+# an update then you have to wait for the new GoldPiglin version
+#  (Paper adapter does not need to wait for updates most of the time).
 adapter: NBTAPI
+debug: false
 update-message: true
 hatred:
   expiration-time: 20
