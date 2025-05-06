@@ -1,17 +1,10 @@
 package one.tranic.goldpiglin.common;
 
-import one.tranic.goldpiglin.bukkit.napi.v1_20_1.N1201_Bukkit;
-import one.tranic.goldpiglin.bukkit.napi.v1_20_1.N1201_Paper;
-import one.tranic.goldpiglin.bukkit.napi.v1_20_5.N1205_Bukkit;
-import one.tranic.goldpiglin.bukkit.napi.v1_20_5.N1205_Paper;
-import one.tranic.goldpiglin.bukkit.rtag.v1_20_1.R1201_Bukkit;
-import one.tranic.goldpiglin.bukkit.rtag.v1_20_1.R1201_Paper;
-import one.tranic.goldpiglin.bukkit.rtag.v1_20_5.R1205_Bukkit;
-import one.tranic.goldpiglin.bukkit.rtag.v1_20_5.R1205_Paper;
+import one.tranic.goldpiglin.bukkit.*;
 import one.tranic.goldpiglin.common.config.Config;
-import one.tranic.goldpiglin.paper.v1_20_1.P1201_Target;
-import one.tranic.goldpiglin.paper.v1_20_6.P1206_Target;
-import one.tranic.goldpiglin.paper.v1_21_3.P1213_Target;
+import one.tranic.goldpiglin.paper.V1_20_R1_Paper;
+import one.tranic.goldpiglin.paper.V1_20_R4_Paper;
+import one.tranic.goldpiglin.paper.V1_21_R2_Paper;
 import one.tranic.t.utils.Platform;
 import one.tranic.t.utils.Reflect;
 import org.jetbrains.annotations.NotNull;
@@ -21,34 +14,44 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 public enum Adapter {
+    Spigot("Spigot", null) {
+        @Override
+        public BaseTarget createTarget() {
+            if (Version.isMaximumVersion(21, 6)) return null;
+            if (Version.isMinimumVersion(21, 5)) return new V1_21_R4_Spigot();
+            if (Version.isMinimumVersion(21, 4)) return new V1_21_R3_Spigot();
+            if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Spigot();
+            if (Version.isMinimumVersion(21, 1)) return new V1_21_R1_Spigot();
+            if (Version.isMinimumVersion(20, 6)) return new V1_20_R4_Spigot();
+            if (Version.isMinimumVersion(20, 4)) return new V1_20_R3_Spigot();
+            if (Version.isMinimumVersion(20, 2)) return new V1_20_R2_Spigot();
+            if (Version.isMinimumVersion(20, 1)) return new V1_20_R1_Spigot();
+            return null;
+        }
+    },
     PAPER("Paper", null) {
         @Override
         public BaseTarget createTarget() {
-            boolean is1205 = Version.isMinimumVersion(20, 5);
-            boolean is1213 = Version.isMinimumVersion(21, 3);
-
-            if (is1213) return new P1213_Target();
-            return is1205 ? new P1206_Target() : new P1201_Target();
+            if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Paper();
+            return Version.isMinimumVersion(20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
         }
     },
     NBTAPI("NBTAPI", "de.tr7zw.nbtapi.NBT") {
         @Override
         public BaseTarget createTarget() {
-            boolean is1205 = Version.isMinimumVersion(20, 5);
             boolean paper = Platform.get() != Platform.Spigot;
 
-            if (is1205) return paper ? new N1205_Paper() : new N1205_Bukkit();
-            return paper ? new N1201_Paper() : new N1201_Bukkit();
+            if (Version.isMinimumVersion(20, 5)) return paper ? new V1_20_R4_NAPI_Paper() : new V1_20_R4_NAPI_Bukkit();
+            return paper ? new V1_20_R1_NAPI_Paper() : new V1_20_R1_NAPI_Bukkit();
         }
     },
     RTAG("Rtag", "com.saicone.rtag.RtagItem") {
         @Override
         public BaseTarget createTarget() {
-            boolean is1205 = Version.isMinimumVersion(20, 5);
             boolean paper = Platform.get() != Platform.Spigot;
 
-            if (is1205) return paper ? new R1205_Paper() : new R1205_Bukkit();
-            return paper ? new R1201_Paper() : new R1201_Bukkit();
+            if (Version.isMinimumVersion(20, 5)) return paper ? new V1_20_R4_Rtag_Paper() : new V1_20_R4_Rtag_Bukkit();
+            return paper ? new V1_20_R1_Rtag_Paper() : new V1_20_R1_Rtag_Bukkit();
         }
     };
 
@@ -61,7 +64,10 @@ public enum Adapter {
         this.adapterName = name;
         this.adapterClass = adapterClass;
         this.isPresent = Objects.equals(this.adapterName, "Paper") ?
-                Platform.get() != Platform.Spigot : Reflect.hasClass(adapterClass);
+                Platform.get() != Platform.Spigot :
+                Objects.equals(this.adapterName, "Spigot") ?
+                        Platform.get() == Platform.Spigot :
+                        Reflect.hasClass(adapterClass);
     }
 
     public static @NotNull Adapter getAdapter() {

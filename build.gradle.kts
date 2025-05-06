@@ -14,6 +14,7 @@ allprojects {
     apply(plugin = "com.gradleup.shadow")
 
     repositories {
+        mavenLocal()
         maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://oss.sonatype.org/content/groups/public/")
@@ -28,15 +29,25 @@ allprojects {
 }
 
 repositories {
+    mavenLocal()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation(project(":Common"))
     implementation(project(":Paper"))
-    implementation(project(":Paper_V1_20_1"))
-    implementation(project(":Paper_V1_20_6"))
-    implementation(project(":Paper_V1_21_3"))
+    implementation(project(":Paper:V1_20_R1"))
+    implementation(project(":Paper:V1_20_R4"))
+    implementation(project(":Paper:V1_21_R2"))
+    implementation(project(":Bukkit"))
+    implementation(project(":Bukkit:V1_20_R1"))
+    implementation(project(":Bukkit:V1_20_R2"))
+    implementation(project(":Bukkit:V1_20_R3"))
+    implementation(project(":Bukkit:V1_20_R4"))
+    implementation(project(":Bukkit:V1_21_R1"))
+    implementation(project(":Bukkit:V1_21_R2"))
+    implementation(project(":Bukkit:V1_21_R3"))
+    implementation(project(":Bukkit:V1_21_R4"))
     implementation("one.tranic:t-utils:1.2.3")
     implementation("one.tranic:t-thread:1.0.1")
     compileOnly("org.slf4j:slf4j-api:2.0.16")

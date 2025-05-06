@@ -49,8 +49,13 @@ public class Config {
         configuration.addDefault("hatred.can-see.native", false);
         configuration.addDefault("hatred.can-see.reversal", false);
 
-        configuration.setComments("adapter", List.of("Select according to your needs.",
-                "Supported adapters: Paper, NBTAPI, Rtag"));
+        configuration.setComments("adapter",
+                List.of("Select according to your needs.",
+                        "Supported adapters: Spigot, Paper, NBTAPI, Rtag",
+                        "The Spigot adapter is compatible with 1.20.1-1.21.5, if Minecraft releases",
+                        "an update then you have to wait for the new GoldPiglin version",
+                        " (Paper adapter does not need to wait for updates most of the time).")
+        );
         configuration.setComments("hatred.near.enabled", List.of("Area-wide hatred, closer to vanilla behavior, but may take longer to calculate."));
         configuration.setComments("hatred.can-see.enabled", List.of("Whether only Piglin within the player's sight will trigger hatred"));
         configuration.setComments("hatred.can-see.native", List.of("Use Spigot's own canSee API instead of GoldPiglin's line of sight calculation"));

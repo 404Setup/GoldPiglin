@@ -1,6 +1,6 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.bukkit.common.UpdateEvent;
+import one.tranic.goldpiglin.common.UpdateEvent;
 import one.tranic.goldpiglin.command.GPiglinCommand;
 import one.tranic.goldpiglin.common.Adapter;
 import one.tranic.goldpiglin.common.BaseTarget;
