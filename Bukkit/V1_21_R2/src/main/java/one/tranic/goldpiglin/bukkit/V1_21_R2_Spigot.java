@@ -5,6 +5,8 @@ import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.ai.behavior.BehaviorUtil;
 import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import one.tranic.goldpiglin.common.GoldPiglinLogger;
+import one.tranic.goldpiglin.common.config.Config;
 import org.bukkit.craftbukkit.v1_21_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,7 +28,14 @@ public class V1_21_R2_Spigot extends BukkitBase {
         net.minecraft.world.item.ItemStack item = CraftItemStack.asNMSCopy(itemStack);
 
         ArmorTrim trim = item.a().a(DataComponents.U);
-        if (trim == null || trim.a() == null) return false;
-        return trim.a().a(TrimMaterials.f);
+        if (trim == null || trim.a() == null) {
+            if (Config.isDebug())
+                GoldPiglinLogger.logger.info("NBT tag is null for {}", itemStack.getType());
+            return false;
+        }
+        var b = trim.a().a(TrimMaterials.f);
+        if (Config.isDebug())
+            GoldPiglinLogger.logger.info("NBT tag is {} for {}", b, itemStack.getType());
+        return b;
     }
 }

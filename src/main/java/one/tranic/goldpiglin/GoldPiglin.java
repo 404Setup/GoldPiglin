@@ -1,10 +1,7 @@
 package one.tranic.goldpiglin;
 
 import one.tranic.goldpiglin.command.GPiglinCommand;
-import one.tranic.goldpiglin.common.Adapter;
-import one.tranic.goldpiglin.common.BaseTarget;
-import one.tranic.goldpiglin.common.UpdateEvent;
-import one.tranic.goldpiglin.common.Version;
+import one.tranic.goldpiglin.common.*;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.FetchVersion;
 import one.tranic.goldpiglin.common.data.Scheduler;
@@ -13,12 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
 public class GoldPiglin extends JavaPlugin {
-    public static final org.slf4j.Logger logger = LoggerFactory.getLogger("GoldPiglin");
     private static FetchVersion fetchVersion;
     private static String targetSign;
     private static GoldPiglin instance;
@@ -81,7 +76,7 @@ public class GoldPiglin extends JavaPlugin {
         if (target == null)
             throw new UnsupportedOperationException("GoldPiglin could not find any available adapters on this server!");
         targetSign = target.getTargetSign();
-        logger.info("GoldPiglin is running on {}, Adapter: {}",
+        GoldPiglinLogger.logger.info("GoldPiglin is running on {}, Adapter: {}",
                 Bukkit.getServer().getName(), targetSign);
         register(target);
     }
@@ -89,10 +84,10 @@ public class GoldPiglin extends JavaPlugin {
     private BaseTarget createTargetForCurrentVersion() {
         Adapter adapter = Adapter.getAdapter();
         if (Config.isDebug()) {
-            logger.info("Adapter: {}", adapter.getAdapterName());
-            logger.info("Server report Version: {}", Bukkit.getServer().getVersion());
-            logger.info("Server report Bukkit Version: {}", Bukkit.getServer().getBukkitVersion());
-            logger.info("Plugin report Version: {}.{}.{}", Version.getMajor(), Version.getMinor(), Version.getPatch());
+            GoldPiglinLogger.logger.info("Adapter: {}", adapter.getAdapterName());
+            GoldPiglinLogger.logger.info("Server report Version: {}", Bukkit.getServer().getVersion());
+            GoldPiglinLogger.logger.info("Server report Bukkit Version: {}", Bukkit.getServer().getBukkitVersion());
+            GoldPiglinLogger.logger.info("Plugin report Version: {}.{}.{}", Version.getMajor(), Version.getMinor(), Version.getPatch());
         }
         if (!adapter.isPresent()) return null;
 

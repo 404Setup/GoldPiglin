@@ -24,6 +24,7 @@ allprojects {
     }
 
     dependencies {
+        compileOnly("org.slf4j:slf4j-api:2.0.16")
         compileOnly("one.tranic:t-thread:1.0.1")
     }
 }
