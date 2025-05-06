@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 public abstract class BukkitBase extends BaseTarget {
     @EventHandler
     public void onPlayerInventoryChange(InventoryClickEvent event) {
+        if (event.isCancelled()) return;
         if (event.getWhoClicked() instanceof Player &&
                 (event.getSlotType() == InventoryType.SlotType.ARMOR ||
                         event.isShiftClick() && event.getCurrentItem() != null && isArmor(event.getCurrentItem().getType()))) {
@@ -20,6 +21,7 @@ public abstract class BukkitBase extends BaseTarget {
 
     @EventHandler
     public void onItemPickup(EntityPickupItemEvent event) {
+        if (event.isCancelled()) return;
         if (event.getEntity() instanceof Player player &&
                 event.getItem().getItemStack() != null &&
                 isArmor(event.getItem().getItemStack().getType())) {

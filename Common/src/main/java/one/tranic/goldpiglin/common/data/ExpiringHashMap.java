@@ -42,13 +42,6 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
             }
             return false;
         });
-        /*expirationMap.entrySet().removeIf(entry -> {
-            if (entry.getValue() < currentTime) {
-                map.remove(entry.getKey());
-                return true;
-            }
-            return false;
-        });*/
 
         // Two-way balance to avoid strange problems
         if (map.size() != expirationMap.size()) {

@@ -8,7 +8,6 @@ import one.tranic.goldpiglin.common.Version;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.FetchVersion;
 import one.tranic.goldpiglin.common.data.Scheduler;
-import one.tranic.goldpiglin.common.exception.UnsupportedVersionException;
 import one.tranic.goldpiglin.common.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.SimpleCommandMap;
@@ -40,7 +39,7 @@ public class GoldPiglin extends JavaPlugin {
     @Override
     public void onEnable() {
         if (Version.getMinor() < 20)
-            throw new UnsupportedVersionException("GoldPiglin cannot run on this version of the server!");
+            throw new UnsupportedOperationException("GoldPiglin cannot run on this version of the server!");
 
         instance = this;
         Config.reload(this);
@@ -62,9 +61,7 @@ public class GoldPiglin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (metrics != null) {
-            metrics.shutdown();
-        }
+        if (metrics != null) metrics.shutdown();
         fetchVersion.stop();
         Scheduler.shutdown();
     }
@@ -82,7 +79,7 @@ public class GoldPiglin extends JavaPlugin {
     private void registerTargetHandler() {
         BaseTarget target = createTargetForCurrentVersion();
         if (target == null)
-            throw new UnsupportedVersionException("GoldPiglin could not find any available adapters on this server!");
+            throw new UnsupportedOperationException("GoldPiglin could not find any available adapters on this server!");
         targetSign = target.getTargetSign();
         logger.info("GoldPiglin is running on {}, Adapter: {}",
                 Bukkit.getServer().getName(), targetSign);

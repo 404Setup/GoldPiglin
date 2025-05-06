@@ -56,6 +56,7 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
+        if (event.isCancelled() || !event.getDamager().getWorld().isPiglinSafe()) return;
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
             targets.put(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
             if (Config.getHatred().isNear()) getEntityStats(player);
@@ -64,14 +65,14 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onBreakBlock(BlockBreakEvent event) {
-        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (event.isCancelled() || !event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Material block = event.getBlock().getType();
         if (isNetherOre(block)) getEntityStats(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (event.isCancelled() || !event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Block block = event.getClickedBlock();
         if (block == null || block.getType() != Material.CHEST) return;
         getEntityStats(event.getPlayer());
@@ -79,7 +80,9 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
+        if (event.isCancelled()) return;
         if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
+            if (!player.getWorld().isPiglinSafe()) return;
             if (this.targets.get(entity.getUniqueId()) != null) return;
             ItemStack[] armors = player.getInventory().getArmorContents();
             Boolean status = playerCache.get(player.getUniqueId());
