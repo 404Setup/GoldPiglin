@@ -68,8 +68,13 @@ public abstract class BaseTarget implements Listener {
     @EventHandler
     public void onBreakBlock(BlockBreakEvent event) {
         if (event.isCancelled()) return;
+
         var player = event.getPlayer();
-        if (player.getGameMode().equals(GameMode.CREATIVE) || !player.getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (player.getGameMode().equals(GameMode.CREATIVE) ||
+                !player.getWorld().isPiglinSafe() ||
+                !Config.getHatred().isNear())
+            return;
+
         Material block = event.getBlock().getType();
         if (isNetherOre(block)) getEntityStats(player);
     }
@@ -78,18 +83,20 @@ public abstract class BaseTarget implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.isCancelled()) return;
         var player = event.getPlayer();
-        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (!player.getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Block block = event.getClickedBlock();
         if (block == null || block.getType() != Material.CHEST) return;
-        getEntityStats(event.getPlayer());
+        getEntityStats(player);
     }
 
     @EventHandler
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
         if (event.isCancelled()) return;
         if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
-            if (player.getGameMode().equals(GameMode.CREATIVE) || !player.getWorld().isPiglinSafe()) return;
-            if (this.targets.get(entity.getUniqueId()) != null) return;
+            if (player.getGameMode().equals(GameMode.CREATIVE) ||
+                    !player.getWorld().isPiglinSafe() ||
+                    this.targets.get(entity.getUniqueId()) != null) return;
+
             ItemStack[] armors = player.getInventory().getArmorContents();
             Boolean status = playerCache.get(player.getUniqueId());
             if (status == null) {
