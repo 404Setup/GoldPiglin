@@ -13,10 +13,15 @@ public class Config {
 
     private static Hatred hatred = new Hatred();
     private static String adapter;
+    private static boolean debug = false;
     private static boolean updateMessage = true;
 
     public static Hatred getHatred() {
         return hatred;
+    }
+
+    public static boolean isDebug() {
+        return debug;
     }
 
     public static synchronized void reload(JavaPlugin plugin) {
@@ -38,6 +43,7 @@ public class Config {
 
     public static synchronized void save() throws IOException {
         configuration.addDefault("adapter", "NBTAPI");
+        configuration.addDefault("debug", false);
         configuration.addDefault("update-message", true);
         configuration.addDefault("hatred.expiration-time", 20L);
         configuration.addDefault("hatred.expiration-scanner-time", 40L);
@@ -67,6 +73,7 @@ public class Config {
 
     private static synchronized void read() {
         adapter = configuration.getString("adapter");
+        debug = configuration.getBoolean("debug");
         updateMessage = configuration.getBoolean("update-message");
         hatred = new Hatred();
         hatred.setExpirationTime(configuration.getLong("hatred.expiration-time"));

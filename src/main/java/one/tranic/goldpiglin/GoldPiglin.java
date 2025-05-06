@@ -1,9 +1,9 @@
 package one.tranic.goldpiglin;
 
-import one.tranic.goldpiglin.common.UpdateEvent;
 import one.tranic.goldpiglin.command.GPiglinCommand;
 import one.tranic.goldpiglin.common.Adapter;
 import one.tranic.goldpiglin.common.BaseTarget;
+import one.tranic.goldpiglin.common.UpdateEvent;
 import one.tranic.goldpiglin.common.Version;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.FetchVersion;
@@ -62,7 +62,7 @@ public class GoldPiglin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (metrics != null) metrics.shutdown();
-        fetchVersion.stop();
+        if (fetchVersion != null) fetchVersion.stop();
         Scheduler.shutdown();
     }
 
@@ -88,6 +88,12 @@ public class GoldPiglin extends JavaPlugin {
 
     private BaseTarget createTargetForCurrentVersion() {
         Adapter adapter = Adapter.getAdapter();
+        if (Config.isDebug()) {
+            logger.info("Adapter: {}", adapter.getAdapterName());
+            logger.info("Server report Version: {}", Bukkit.getServer().getVersion());
+            logger.info("Server report Bukkit Version: {}", Bukkit.getServer().getBukkitVersion());
+            logger.info("Plugin report Version: {}.{}.{}", Version.getMajor(), Version.getMinor(), Version.getPatch());
+        }
         if (!adapter.isPresent()) return null;
 
         return adapter.createTarget();
