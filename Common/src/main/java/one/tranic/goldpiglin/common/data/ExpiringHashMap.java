@@ -4,17 +4,18 @@ import one.tranic.t.utils.Collections;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("unused")
 public class ExpiringHashMap<K, V> implements Map<K, V> {
     private final long expirationTime;
-    private final Map<K, V> map;
-    private final Map<K, Long> expirationMap;
+    private final ConcurrentHashMap<K, V> map;
+    private final ConcurrentHashMap<K, Long> expirationMap;
 
     public ExpiringHashMap(long expirationTime, long expirationScannerTime) {
-        this.map = Collections.newHashMap();
-        this.expirationMap = Collections.newHashMap();
+        this.map = new ConcurrentHashMap<>();
+        this.expirationMap = new ConcurrentHashMap<>();
 
         this.expirationTime = expirationTime;
 
@@ -60,9 +61,8 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        map.put(key, value);
         expirationMap.put(key, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expirationTime));
-        return value;
+        return map.put(key, value);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(Object value) {
-        return false;
+        return map.containsValue(value);
     }
 
     public int size() {
