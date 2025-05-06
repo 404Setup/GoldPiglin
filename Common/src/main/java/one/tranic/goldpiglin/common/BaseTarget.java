@@ -4,6 +4,7 @@ import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
 import one.tranic.t.utils.Collections;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -58,6 +59,7 @@ public abstract class BaseTarget implements Listener {
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.isCancelled() || !event.getDamager().getWorld().isPiglinSafe()) return;
         if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
+            if (player.getGameMode().equals(GameMode.CREATIVE)) return;
             targets.put(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
             if (Config.getHatred().isNear()) getEntityStats(player);
         }
@@ -65,14 +67,18 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onBreakBlock(BlockBreakEvent event) {
-        if (event.isCancelled() || !event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (event.isCancelled()) return;
+        var player = event.getPlayer();
+        if (player.getGameMode().equals(GameMode.CREATIVE) || !player.getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Material block = event.getBlock().getType();
-        if (isNetherOre(block)) getEntityStats(event.getPlayer());
+        if (isNetherOre(block)) getEntityStats(player);
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.isCancelled() || !event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
+        if (event.isCancelled()) return;
+        var player = event.getPlayer();
+        if (!event.getPlayer().getWorld().isPiglinSafe() || !Config.getHatred().isNear()) return;
         Block block = event.getClickedBlock();
         if (block == null || block.getType() != Material.CHEST) return;
         getEntityStats(event.getPlayer());
@@ -82,7 +88,7 @@ public abstract class BaseTarget implements Listener {
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
         if (event.isCancelled()) return;
         if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
-            if (!player.getWorld().isPiglinSafe()) return;
+            if (player.getGameMode().equals(GameMode.CREATIVE) || !player.getWorld().isPiglinSafe()) return;
             if (this.targets.get(entity.getUniqueId()) != null) return;
             ItemStack[] armors = player.getInventory().getArmorContents();
             Boolean status = playerCache.get(player.getUniqueId());
