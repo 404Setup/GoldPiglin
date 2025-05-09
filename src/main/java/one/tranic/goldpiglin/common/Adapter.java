@@ -5,7 +5,7 @@ import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.paper.V1_20_R1_Paper;
 import one.tranic.goldpiglin.paper.V1_20_R4_Paper;
 import one.tranic.goldpiglin.paper.V1_21_R2_Paper;
-import one.tranic.t.utils.Platform;
+import one.tranic.t.utils.minecraft.Platform;
 import one.tranic.t.utils.Reflect;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

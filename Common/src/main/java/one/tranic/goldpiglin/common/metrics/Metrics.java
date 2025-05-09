@@ -16,7 +16,7 @@ package one.tranic.goldpiglin.common.metrics;
  */
 
 import one.tranic.t.thread.T2hread;
-import one.tranic.t.utils.Platform;
+import one.tranic.t.utils.minecraft.Platform;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -86,7 +86,7 @@ public class Metrics {
         boolean logResponseStatusText = config.getBoolean("logResponseStatusText", false);
         boolean isFolia = false;
         try {
-            isFolia = Platform.isMultithreading();
+            isFolia = Platform.isMultithreadedBukkit();
         } catch (Exception ignored) {
         }
         metricsBase =

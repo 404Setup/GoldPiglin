@@ -26,6 +26,8 @@ allprojects {
     dependencies {
         compileOnly("org.slf4j:slf4j-api:2.0.16")
         compileOnly("one.tranic:t-thread:1.0.1")
+        compileOnly("one.tranic:t-utils:1.3.0")
+        //compileOnly(files("../t-utils-1.2.4.jar"))
     }
 }
 
@@ -49,7 +51,9 @@ dependencies {
     implementation(project(":Bukkit:V1_21_R2"))
     implementation(project(":Bukkit:V1_21_R3"))
     implementation(project(":Bukkit:V1_21_R4"))
-    implementation("one.tranic:t-utils:1.2.3")
+    implementation("one.tranic:t-utils:1.3.0")
+    //implementation(files("t-utils-1.2.4.jar"))
+    //implementation(files("t-utils-1.2.4-sources.jar"))
     implementation("one.tranic:t-thread:1.0.1")
     compileOnly("org.slf4j:slf4j-api:2.0.16")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
