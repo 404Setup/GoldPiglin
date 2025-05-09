@@ -6,7 +6,6 @@ import one.tranic.t.utils.compress.BaseCompress;
 import one.tranic.t.utils.diff.SimplePatcher;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class DiffCommand extends Command {
     private final static Path DIFF_DIR = GoldPiglin.getPlugin().getDataFolder().toPath().getParent().resolve("diff");
     private final static Path Plugin_DIR = GoldPiglin.getPlugin().getDataFolder().toPath().getParent();
 
-    public DiffCommand(JavaPlugin plugin) {
+    public DiffCommand() {
         super("diff");
         this.setUsage("/diff <create> jar1 jar2 | /diff <merge> patch jar");
 

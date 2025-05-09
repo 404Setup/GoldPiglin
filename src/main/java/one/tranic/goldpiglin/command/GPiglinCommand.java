@@ -10,18 +10,15 @@ import one.tranic.t.utils.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class GPiglinCommand extends Command {
-    private final JavaPlugin plugin;
     private final String permissionMessage = ChatColor.AQUA + "[GoldPiglin] " + ChatColor.RED + "You don't have permission to use this command!";
 
-    public GPiglinCommand(JavaPlugin plugin) {
+    public GPiglinCommand() {
         super("gpiglin");
-        this.plugin = plugin;
         this.setUsage("/gpiglin <reload|version>");
     }
 
@@ -141,7 +138,7 @@ public class GPiglinCommand extends Command {
             sender.sendMessage(permissionMessage);
             return;
         }
-        Config.reload(this.plugin);
+        Config.reload(GoldPiglin.getPlugin());
         sender.sendMessage(ChatColor.AQUA + "[GoldPiglin] " + ChatColor.GREEN + "The configuration file has been reloaded. Some changes require reloading the plugin or restarting the server to take effect.");
     }
 

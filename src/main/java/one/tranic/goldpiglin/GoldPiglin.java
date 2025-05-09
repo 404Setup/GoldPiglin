@@ -43,8 +43,8 @@ public class GoldPiglin extends JavaPlugin {
         registerTargetHandler();
 
         SimpleCommandMap commandMap = getCommandMap();
-        commandMap.register("gpiglin", "goldpiglin", new GPiglinCommand(this));
-        if (false) commandMap.register("diff", "system", new DiffCommand(this)); // only debug
+        commandMap.register("gpiglin", "goldpiglin", new GPiglinCommand());
+        if (false) commandMap.register("diff", "system", new DiffCommand()); // only debug
 
         metrics = new Metrics(this, 23906);
 
