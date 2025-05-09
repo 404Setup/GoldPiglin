@@ -1,5 +1,6 @@
 package one.tranic.goldpiglin;
 
+import one.tranic.goldpiglin.command.DiffCommand;
 import one.tranic.goldpiglin.command.GPiglinCommand;
 import one.tranic.goldpiglin.common.*;
 import one.tranic.goldpiglin.common.config.Config;
@@ -43,6 +44,7 @@ public class GoldPiglin extends JavaPlugin {
 
         SimpleCommandMap commandMap = getCommandMap();
         commandMap.register("gpiglin", "goldpiglin", new GPiglinCommand(this));
+        if (false) commandMap.register("diff", "system", new DiffCommand(this)); // only debug
 
         metrics = new Metrics(this, 23906);
 
