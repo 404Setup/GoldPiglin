@@ -64,19 +64,21 @@ public class DiffCommand extends Command {
                 sender.sendMessage("Usage: /diff create <jar1> <jar2>");
                 return true;
             }
-            return runCreateDiff(sender, commandLabel, args);
+            runCreateDiff(sender, commandLabel, args);
+            return true;
         }
         if (args[0].equalsIgnoreCase("merge")) {
             if (args.length < 3) {
                 sender.sendMessage("Usage: /diff merge <patch> <jar>");
                 return true;
             }
-            return runMergeDiff(sender, commandLabel, args);
+            runMergeDiff(sender, commandLabel, args);
+            return true;
         }
         return true;
     }
 
-    private boolean runCreateDiff(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
+    private void runCreateDiff(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
         var jar1 = args[1];
         var jar2 = args[2];
 
@@ -85,7 +87,7 @@ public class DiffCommand extends Command {
 
         if (!j1.exists() || !j2.exists()) {
             sender.sendMessage("One of the jars does not exist");
-            return true;
+            return;
         }
 
         try {
@@ -112,11 +114,9 @@ public class DiffCommand extends Command {
             sender.sendMessage("Error: " + e.getMessage());
             e.printStackTrace();
         }
-
-        return true;
     }
 
-    private boolean runMergeDiff(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
+    private void runMergeDiff(@NotNull CommandSender sender, @NotNull String commandLabel, String[] args) {
         GoldPiglinLogger.logger.info("Args: {}", String.join(" ", args));
         var patch = args[1];
         var jar = args[2];
@@ -132,7 +132,7 @@ public class DiffCommand extends Command {
         } catch (IOException e) {
             sender.sendMessage("Error: " + e.getMessage());
             e.printStackTrace();
-            return true;
+            return;
         }
 
         /*try (var pS = new FileInputStream(p); var jS = new FileInputStream(j)) {
@@ -146,7 +146,7 @@ public class DiffCommand extends Command {
             return true;
         }*/
 
-        return false;
+        return;
     }
 
     @Override
