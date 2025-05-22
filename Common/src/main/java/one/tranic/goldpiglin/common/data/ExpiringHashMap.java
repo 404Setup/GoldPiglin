@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("unused")
 public class ExpiringHashMap<K, V> implements Map<K, V> {
@@ -71,10 +72,6 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         }
     }
 
-    private boolean isExpired(Object key, Long expiration) {
-        return expiration != null && System.currentTimeMillis() > expiration;
-    }
-
     @Override
     public V put(K key, V value) {
         long expirationTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expirationTime);
@@ -115,19 +112,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     }
 
     public List<Map.Entry<K, V>> filter(java.util.function.Predicate<Map.Entry<K, V>> predicate) {
-        long currentTime = System.currentTimeMillis();
-
-
-        return expirationMap.entrySet().stream()
-                .filter(entry -> entry.getValue() > currentTime)
-                .map(entry -> {
-                    K key = entry.getKey();
-                    V value = map.get(key);
-                    return (value != null) ? new SimpleEntry<>(key, value) : null;
-                })
-                .filter(Objects::nonNull)
-                .filter(predicate)
-                .collect(Collectors.toList());
+        return entryStream().filter(predicate).collect(Collectors.toList());
     }
 
     @Override
@@ -146,7 +131,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
                     if (expiration != null && expiration > currentTime) {
                         V val = entry.getValue();
-                        return value == null ? val == null : value.equals(val);
+                        return Objects.equals(value, val);
                     }
                     return false;
                 });
@@ -198,6 +183,10 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public @NotNull Set<Entry<K, V>> entrySet() {
+        return entryStream().collect(Collectors.toSet());
+    }
+
+    public Stream<SimpleEntry<K, V>> entryStream() {
         long currentTime = System.currentTimeMillis();
 
         return expirationMap.entrySet().stream()
@@ -207,8 +196,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
                     V value = map.get(key);
                     return (value != null) ? new SimpleEntry<>(key, value) : null;
                 })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+                .filter(Objects::nonNull);
     }
 
     @Override
@@ -228,7 +216,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         return Objects.hash(expirationTime, map, expirationMap);
     }
 
-    private record SimpleEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
+    public record SimpleEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
         @Override
         public K getKey() {
             return key;
