@@ -1,23 +1,27 @@
 package one.tranic.goldpiglin.common.data;
 
-import one.tranic.t.utils.Collections;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class ExpiringHashMap<K, V> implements Map<K, V> {
     private final long expirationTime;
-    private final Map<K, V> map;
-    private final Map<K, Long> expirationMap;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ConcurrentHashMap<K, V> map;
+    private final ConcurrentHashMap<K, Long> expirationMap;
 
     public ExpiringHashMap(long expirationTime, long expirationScannerTime) {
-        this.map = new HashMap<>();
-        this.expirationMap = new HashMap<>();
-
+        this.map = new ConcurrentHashMap<>();
+        this.expirationMap = new ConcurrentHashMap<>();
         this.expirationTime = expirationTime;
 
         Scheduler.asyncExecute(() -> {
@@ -36,47 +40,34 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     private void removeExpiredEntries() {
         long currentTime = System.currentTimeMillis();
-        List<K> keysToRemove = Collections.newArrayList();
 
-        lock.readLock().lock();
-        try {
-            for (Entry<K, Long> entry : expirationMap.entrySet()) {
-                if (entry.getValue() < currentTime) {
-                    keysToRemove.add(entry.getKey());
-                }
-            }
-        } finally {
-            lock.readLock().unlock();
-        }
+        Set<K> keysToRemove = expirationMap.entrySet().stream()
+                .filter(entry -> entry.getValue() < currentTime)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
 
-        if (!keysToRemove.isEmpty()) {
-            lock.writeLock().lock();
-            try {
-                for (K key : keysToRemove) {
-                    expirationMap.remove(key);
-                    map.remove(key);
-                }
-            } finally {
-                lock.writeLock().unlock();
-            }
-        }
+        if (!keysToRemove.isEmpty())
+            keysToRemove.forEach(key -> {
+                expirationMap.remove(key);
+                map.remove(key);
+            });
 
         syncMaps();
     }
 
     private void syncMaps() {
         // Two-way balance to avoid strange problems
-        lock.writeLock().lock();
-        try {
-            if (map.size() != expirationMap.size()) {
-                if (map.size() > expirationMap.size()) {
-                    map.keySet().removeIf(key -> !expirationMap.containsKey(key));
-                } else {
-                    expirationMap.keySet().removeIf(key -> !map.containsKey(key));
-                }
-            }
-        } finally {
-            lock.writeLock().unlock();
+        if (map.size() != expirationMap.size()) {
+            Set<K> mapKeys = new HashSet<>(map.keySet());
+            Set<K> expirationKeys = new HashSet<>(expirationMap.keySet());
+
+            mapKeys.stream()
+                    .filter(key -> !expirationMap.containsKey(key))
+                    .forEach(map::remove);
+
+            expirationKeys.stream()
+                    .filter(key -> !map.containsKey(key))
+                    .forEach(expirationMap::remove);
         }
     }
 
@@ -86,58 +77,37 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        lock.writeLock().lock();
-        try {
-            expirationMap.put(key, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expirationTime));
-            return map.put(key, value);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        long expirationTimeMillis = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(expirationTime);
+        expirationMap.put(key, expirationTimeMillis);
+        return map.put(key, value);
     }
 
     @Override
     public void putAll(@NotNull Map<? extends K, ? extends V> m) {
         if (m.isEmpty()) return;
 
-        lock.writeLock().lock();
-        try {
-            long currentTime = System.currentTimeMillis();
-            long expirationTimeMillis = TimeUnit.SECONDS.toMillis(expirationTime);
+        long currentTime = System.currentTimeMillis();
+        long expirationTimeMillis = TimeUnit.SECONDS.toMillis(expirationTime);
 
-            for (Entry<? extends K, ? extends V> entry : m.entrySet()) {
-                K key = entry.getKey();
-                V value = entry.getValue();
-                map.put(key, value);
-                expirationMap.put(key, currentTime + expirationTimeMillis);
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
+        m.forEach((key, value) -> {
+            map.put(key, value);
+            expirationMap.put(key, currentTime + expirationTimeMillis);
+        });
     }
 
     @Override
     public V get(Object key) {
-        lock.readLock().lock();
-        try {
-            Long expiration = expirationMap.get(key);
-            if (expiration == null || System.currentTimeMillis() <= expiration)
-                return map.get(key);
-        } finally {
-            lock.readLock().unlock();
+        Long expiration = expirationMap.get(key);
+        if (expiration == null) {
+            return null;
         }
 
-        lock.writeLock().lock();
-        try {
-            Long expiration = expirationMap.get(key);
-            if (expiration == null || System.currentTimeMillis() <= expiration) {
-                return map.get(key);
-            }
+        if (System.currentTimeMillis() > expiration) {
             remove(key);
             return null;
-        } finally {
-            lock.writeLock().unlock();
         }
 
+        return map.get(key);
     }
 
     public Iterator<Entry<K, V>> iterator() {
@@ -145,163 +115,99 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     }
 
     public List<Map.Entry<K, V>> filter(java.util.function.Predicate<Map.Entry<K, V>> predicate) {
-        List<Entry<K, V>> filteredEntries = Collections.newArrayList();
         long currentTime = System.currentTimeMillis();
 
-        lock.readLock().lock();
-        try {
-            expirationMap.forEach((key, expiration) -> {
-                if (expiration > currentTime) {
-                    V value = map.get(key);
-                    if (value != null) {
-                        Map.Entry<K, V> validEntry = new SimpleEntry<>(key, value);
-                        if (predicate.test(validEntry)) {
-                            filteredEntries.add(validEntry);
-                        }
-                    }
-                }
-            });
-        } finally {
-            lock.readLock().unlock();
-        }
 
-        return filteredEntries;
+        return expirationMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > currentTime)
+                .map(entry -> {
+                    K key = entry.getKey();
+                    V value = map.get(key);
+                    return (value != null) ? new SimpleEntry<>(key, value) : null;
+                })
+                .filter(Objects::nonNull)
+                .filter(predicate)
+                .collect(Collectors.toList());
     }
 
     @Override
     public boolean isEmpty() {
-        lock.readLock().lock();
-        try {
-            return map.isEmpty();
-        } finally {
-            lock.readLock().unlock();
-        }
+        return map.isEmpty();
     }
 
     @Override
     public boolean containsValue(Object value) {
-        lock.readLock().lock();
-        try {
-            long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-            for (Map.Entry<K, V> entry : map.entrySet()) {
-                K key = entry.getKey();
-                Long expiration = expirationMap.get(key);
+        return map.entrySet().stream()
+                .anyMatch(entry -> {
+                    K key = entry.getKey();
+                    Long expiration = expirationMap.get(key);
 
-                if (expiration != null && expiration > currentTime) {
-                    V val = entry.getValue();
-                    if (value == null ? val == null : value.equals(val)) {
-                        return true;
+                    if (expiration != null && expiration > currentTime) {
+                        V val = entry.getValue();
+                        return value == null ? val == null : value.equals(val);
                     }
-                }
-            }
-            return false;
-        } finally {
-            lock.readLock().unlock();
-        }
+                    return false;
+                });
     }
 
     public int size() {
-        lock.readLock().lock();
-        try {
-            return map.size();
-        } finally {
-            lock.readLock().unlock();
-        }
+        return map.size();
     }
 
     @Override
     public V remove(Object key) {
-        lock.writeLock().lock();
-        try {
-            expirationMap.remove(key);
-            return map.remove(key);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        expirationMap.remove(key);
+        return map.remove(key);
     }
 
     @Override
     public boolean containsKey(Object key) {
-        lock.readLock().lock();
-        try {
-            return map.containsKey(key);
-        } finally {
-            lock.readLock().unlock();
-        }
+        Long expiration = expirationMap.get(key);
+        return expiration != null && System.currentTimeMillis() <= expiration && map.containsKey(key);
     }
 
     @Override
     public void clear() {
-        lock.writeLock().lock();
-        try {
-            map.clear();
-            expirationMap.clear();
-        } finally {
-            lock.writeLock().unlock();
-        }
+        map.clear();
+        expirationMap.clear();
     }
 
     @Override
     public @NotNull Set<K> keySet() {
-        lock.readLock().lock();
-        try {
-            Set<K> validEntries = Collections.newHashSet();
-            long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-            expirationMap.forEach((key, expiration) -> {
-                if (expiration > currentTime)
-                    validEntries.add(key);
-            });
-
-            return validEntries;
-        } finally {
-            lock.readLock().unlock();
-        }
+        return expirationMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > currentTime)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     @Override
     public @NotNull Collection<V> values() {
-        lock.readLock().lock();
-        try {
-            List<V> validEntries = Collections.newArrayList();
-            long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-            expirationMap.forEach((key, expiration) -> {
-                if (expiration > currentTime) {
-                    V value = map.get(key);
-                    if (value != null) {
-                        validEntries.add(value);
-                    }
-                }
-            });
-
-            return validEntries;
-        } finally {
-            lock.readLock().unlock();
-        }
+        return expirationMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > currentTime)
+                .map(entry -> map.get(entry.getKey()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
     public @NotNull Set<Entry<K, V>> entrySet() {
-        lock.readLock().lock();
-        try {
-            Set<Entry<K, V>> validEntries = new HashSet<>();
-            long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-            expirationMap.forEach((key, expiration) -> {
-                if (expiration > currentTime) {
+        return expirationMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > currentTime)
+                .map(entry -> {
+                    K key = entry.getKey();
                     V value = map.get(key);
-                    if (value != null) {
-                        validEntries.add(new SimpleEntry<>(key, value));
-                    }
-                }
-            });
-
-            return validEntries;
-        } finally {
-            lock.readLock().unlock();
-        }
+                    return (value != null) ? new SimpleEntry<>(key, value) : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -311,24 +217,14 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
         ExpiringHashMap<?, ?> that = (ExpiringHashMap<?, ?>) o;
 
-        lock.readLock().lock();
-        try {
-            return expirationTime == that.expirationTime &&
-                    Objects.equals(map, that.map) &&
-                    Objects.equals(expirationMap, that.expirationMap);
-        } finally {
-            lock.readLock().unlock();
-        }
+        return expirationTime == that.expirationTime &&
+                Objects.equals(map, that.map) &&
+                Objects.equals(expirationMap, that.expirationMap);
     }
 
     @Override
     public int hashCode() {
-        lock.readLock().lock();
-        try {
-            return Objects.hash(expirationTime, map, expirationMap);
-        } finally {
-            lock.readLock().unlock();
-        }
+        return Objects.hash(expirationTime, map, expirationMap);
     }
 
     private record SimpleEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
