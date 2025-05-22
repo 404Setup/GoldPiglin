@@ -163,6 +163,7 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     }
 
     @Override
+    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean containsKey(Object key) {
         Long expiration = expirationMap.get(key);
         return expiration != null && System.currentTimeMillis() <= expiration && map.containsKey(key);
