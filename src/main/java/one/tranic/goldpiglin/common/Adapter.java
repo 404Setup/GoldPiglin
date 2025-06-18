@@ -5,8 +5,8 @@ import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.paper.V1_20_R1_Paper;
 import one.tranic.goldpiglin.paper.V1_20_R4_Paper;
 import one.tranic.goldpiglin.paper.V1_21_R2_Paper;
-import one.tranic.t.utils.minecraft.Platform;
 import one.tranic.t.utils.Reflect;
+import one.tranic.t.utils.minecraft.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,8 @@ public enum Adapter {
     Spigot("Spigot", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 6)) return null;
+            if (Version.isMinimumVersion(21, 7)) return null;
+            if (Version.isMinimumVersion(21, 6)) return new V1_21_R5_Spigot();
             if (Version.isMinimumVersion(21, 5)) return new V1_21_R4_Spigot();
             if (Version.isMinimumVersion(21, 4)) return new V1_21_R3_Spigot();
             if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Spigot();

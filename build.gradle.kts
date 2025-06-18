@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "25.05.1"
+version = "25.06.1"
 
 allprojects {
     apply(plugin = "java")
@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":Bukkit:V1_21_R2"))
     implementation(project(":Bukkit:V1_21_R3"))
     implementation(project(":Bukkit:V1_21_R4"))
+    implementation(project(":Bukkit:V1_21_R5"))
     implementation("one.tranic:t-utils:1.3.0")
     //implementation(files("t-utils-1.2.4.jar"))
     //implementation(files("t-utils-1.2.4-sources.jar"))
