@@ -58,7 +58,7 @@ public class Config {
         configuration.setComments("adapter",
                 List.of("Select according to your needs.",
                         "Supported adapters: Spigot, Paper, NBTAPI, Rtag",
-                        "The Spigot adapter is compatible with 1.20.1-1.21.5, if Minecraft releases",
+                        "The Spigot adapter is compatible with 1.20.1-1.21.7, if Minecraft releases",
                         "an update then you have to wait for the new GoldPiglin version",
                         " (Paper adapter does not need to wait for updates most of the time).")
         );
