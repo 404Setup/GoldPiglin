@@ -17,8 +17,8 @@ public enum Adapter {
     Spigot("Spigot", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 8)) return null;
-            if (Version.isMinimumVersion(21, 7)) return new V1_21_R5_Spigot();
+            if (Version.isMinimumVersion(21, 9)) return null;
+            if (Version.isMinimumVersion(21, 8)) return new V1_21_R5_Spigot();
             if (Version.isMinimumVersion(21, 5)) return new V1_21_R4_Spigot();
             if (Version.isMinimumVersion(21, 4)) return new V1_21_R3_Spigot();
             if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Spigot();
