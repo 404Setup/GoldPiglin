@@ -1,12 +1,12 @@
 package one.tranic.goldpiglin.common;
 
+import one.pkg.tiny.utils.Reflect;
+import one.pkg.tiny.utils.minecraft.Platform;
 import one.tranic.goldpiglin.bukkit.*;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.paper.V1_20_R1_Paper;
 import one.tranic.goldpiglin.paper.V1_20_R4_Paper;
 import one.tranic.goldpiglin.paper.V1_21_R2_Paper;
-import one.tranic.t.utils.Reflect;
-import one.tranic.t.utils.minecraft.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,8 @@ public enum Adapter {
     Spigot("Spigot", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 9)) return null;
+            if (Version.isMinimumVersion(21, 11)) return null;
+            if (Version.isMinimumVersion(21, 10)) return new V1_21_R6_Spigot();
             if (Version.isMinimumVersion(21, 8)) return new V1_21_R5_Spigot();
             if (Version.isMinimumVersion(21, 5)) return new V1_21_R4_Spigot();
             if (Version.isMinimumVersion(21, 4)) return new V1_21_R3_Spigot();
@@ -33,7 +34,7 @@ public enum Adapter {
     PAPER("Paper", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Paper();
+            if (Version.isMinimumVersion(21, 11)) return new V1_21_R2_Paper();
             return Version.isMinimumVersion(20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
         }
     },

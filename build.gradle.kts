@@ -3,11 +3,11 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     java
     id("com.gradleup.shadow") version "9.0.0-beta13" apply false
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply false
 }
 
 group = "one.tranic"
-version = "25.07.1"
+version = "25.10.1"
 
 allprojects {
     apply(plugin = "java")
@@ -52,7 +52,8 @@ dependencies {
     implementation(project(":Bukkit:V1_21_R3"))
     implementation(project(":Bukkit:V1_21_R4"))
     implementation(project(":Bukkit:V1_21_R5"))
-    implementation("one.pkg:tiny-utils:1.4.0")
+    implementation(project(":Bukkit:V1_21_R6"))
+    implementation("one.pkg:tiny-utils:1.5.0")
     //implementation(files("t-utils-1.2.4.jar"))
     //implementation(files("t-utils-1.2.4-sources.jar"))
     implementation("one.tranic:t-thread:1.0.1")

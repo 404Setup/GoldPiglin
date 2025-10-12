@@ -1,9 +1,9 @@
 package one.tranic.goldpiglin.command;
 
+import one.pkg.tiny.utils.compress.BaseCompress;
+import one.pkg.tiny.utils.diff.SimplePatcher;
 import one.tranic.goldpiglin.GoldPiglin;
 import one.tranic.goldpiglin.common.GoldPiglinLogger;
-import one.tranic.t.utils.compress.BaseCompress;
-import one.tranic.t.utils.diff.SimplePatcher;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
