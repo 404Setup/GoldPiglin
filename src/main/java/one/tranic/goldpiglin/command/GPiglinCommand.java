@@ -4,7 +4,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import one.pkg.tiny.utils.Collections;
+import one.pkg.tinyutils.Collections;
 import one.tranic.goldpiglin.GoldPiglin;
 import one.tranic.goldpiglin.common.config.Config;
 import org.bukkit.ChatColor;

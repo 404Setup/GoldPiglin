@@ -1,6 +1,6 @@
 package one.tranic.goldpiglin.common.data;
 
-import one.tranic.t.thread.T2hread;
+import one.pkg.tinyutils.jvm.JVMThread;
 import org.bukkit.ChatColor;
 
 import java.io.BufferedReader;
@@ -27,7 +27,7 @@ public class FetchVersion {
     }
 
     public void run() {
-        updateThread = T2hread.newVirtualThreadFactoryOrDefault().newThread(() -> {
+        updateThread = JVMThread.newVirtualThreadFactoryOrDefault().newThread(() -> {
             try {
                 TimeUnit.HOURS.sleep(2);
             } catch (Exception ignored) {

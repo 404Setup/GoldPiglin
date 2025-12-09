@@ -1,9 +1,9 @@
 package one.tranic.goldpiglin.common;
 
+import one.pkg.tinyutils.Collections;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
-import one.tranic.t.utils.Collections;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;

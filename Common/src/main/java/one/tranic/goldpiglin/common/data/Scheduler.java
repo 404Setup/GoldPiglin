@@ -1,15 +1,17 @@
 package one.tranic.goldpiglin.common.data;
 
-import one.tranic.t.thread.T2hread;
+
+import one.pkg.tinyutils.jvm.JVMThread;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Scheduler {
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(T2hread.newVirtualThreadFactoryOrDefault());
-    private static final ExecutorService asyncExecutor = Executors.newFixedThreadPool(3, T2hread.newVirtualThreadFactoryOrDefault());
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor(JVMThread.newVirtualThreadFactoryOrDefault());
+    private static final ExecutorService asyncExecutor = Executors.newFixedThreadPool(3, JVMThread.newVirtualThreadFactoryOrDefault());
 
-    private Scheduler() {}
+    private Scheduler() {
+    }
 
     public static void execute(Runnable runnable) {
         executor.submit(runnable);

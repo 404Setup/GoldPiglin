@@ -1,7 +1,7 @@
 package one.tranic.goldpiglin.common;
 
-import one.pkg.tiny.utils.Reflect;
-import one.pkg.tiny.utils.minecraft.Platform;
+import one.pkg.tinyutils.Reflect;
+import one.pkg.tinyutils.minecraft.Platform;
 import one.tranic.goldpiglin.bukkit.*;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.paper.V1_20_R1_Paper;

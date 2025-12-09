@@ -1,7 +1,7 @@
 package one.tranic.goldpiglin.command;
 
-import one.pkg.tiny.utils.compress.BaseCompress;
-import one.pkg.tiny.utils.diff.SimplePatcher;
+import one.pkg.tinyutils.compress.BaseCompress;
+import one.pkg.tinyutils.diff.SimplePatcher;
 import one.tranic.goldpiglin.GoldPiglin;
 import one.tranic.goldpiglin.common.GoldPiglinLogger;
 import org.bukkit.command.Command;
