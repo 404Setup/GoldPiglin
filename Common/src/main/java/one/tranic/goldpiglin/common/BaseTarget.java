@@ -40,7 +40,7 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onPiglinDeath(EntityDeathEvent event) {
-        if (event.getEntity() instanceof Piglin entity)
+        if (event.getEntity() instanceof PiglinAbstract entity)
             targets.remove(entity.getUniqueId());
     }
 
@@ -58,7 +58,7 @@ public abstract class BaseTarget implements Listener {
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
         if (event.isCancelled() || !event.getDamager().getWorld().isPiglinSafe()) return;
-        if (event.getEntity() instanceof Piglin entity && event.getDamager() instanceof Player player) {
+        if (event.getEntity() instanceof PiglinAbstract entity && event.getDamager() instanceof Player player) {
             if (player.getGameMode().equals(GameMode.CREATIVE)) return;
             targets.put(entity.getUniqueId(), new TargetEntry(player.getUniqueId(), entity.getUniqueId()));
             if (Config.getHatred().isNear()) getEntityStats(player);
@@ -194,7 +194,7 @@ public abstract class BaseTarget implements Listener {
         List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
         List<Entity> finallyEntities = Collections.newArrayList();
         for (Entity e : entities) {
-            if (e instanceof Player || !(e instanceof Piglin)) continue;
+            if (e instanceof Player || !(e instanceof PiglinAbstract)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
                 if (!v) continue;
