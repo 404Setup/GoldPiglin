@@ -25,6 +25,8 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ public abstract class BaseTarget implements Listener {
     private static final double MAX_DISTANCE = 50.0;
     public final ExpiringHashMap<UUID, TargetEntry> targets = new ExpiringHashMap<>(Config.getHatred().getExpirationTime(), Config.getHatred().getExpirationScannerTime());
     public final ExpiringHashMap<UUID, Boolean> playerCache = new ExpiringHashMap<>(120, 24);
+    private final Logger logger = LoggerFactory.getLogger("GoldPiglinTarget");
 
     public abstract String getTargetSign();
 
@@ -91,11 +94,28 @@ public abstract class BaseTarget implements Listener {
 
     @EventHandler
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            if (Config.isDebug()) logger.info("EntityTargetLivingEntityEvent: The event was cancelled");
+            return;
+        }
         if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
+            var piglinTarget = this.targets.get(entity.getUniqueId());
             if (player.getGameMode().equals(GameMode.CREATIVE) ||
                     !player.getWorld().isPiglinSafe() ||
-                    this.targets.get(entity.getUniqueId()) != null) return;
+                    piglinTarget != null) {
+                if (Config.isDebug()) logger.info("""
+                                EntityTargetLivingEntityEvent:
+                                GameMode: {},
+                                PiglinSafe: {},
+                                PiglinTarget: {},
+                                Player: {}
+                                """,
+                        player.getGameMode(),
+                        player.getWorld().isPiglinSafe(),
+                        piglinTarget == null ? "Unknown" : piglinTarget.targetId(),
+                        player.getName());
+                return;
+            }
 
             ItemStack[] armors = player.getInventory().getArmorContents();
             Boolean status = playerCache.get(player.getUniqueId());
@@ -103,6 +123,7 @@ public abstract class BaseTarget implements Listener {
                 status = hasGoldArmor(armors);
                 playerCache.put(player.getUniqueId(), status);
             }
+            if (Config.isDebug()) logger.info("EntityTargetLivingEntityEvent: GoldArmorStatus {}", status);
             if (status) event.setCancelled(true);
         }
     }
@@ -116,15 +137,27 @@ public abstract class BaseTarget implements Listener {
     }
 
     private boolean hasGoldArmor(@NotNull ItemStack[] armors) {
-        if (armors.length == 0) return false;
+        if (armors.length == 0) {
+            if (Config.isDebug()) logger.info("ItemStack: is empty");
+            return false;
+        }
         boolean v = false;
+        int i = 0;
         for (@Nullable ItemStack armor : armors) {
-            if (armor == null) continue;
+            if (armor == null) {
+                if (Config.isDebug()) logger.info("ItemStack: {} is null", i);
+                continue;
+            }
             if (isGoldArmor(armor.getType())) {
                 v = false;
+                logger.info("ItemStack: {} With golden armor", i);
                 break; // If it's golden armor, use vanilla behavior
             }
-            if (readItemStack(armor)) v = true;
+            var iR = readItemStack(armor);
+            if (Config.isDebug()) logger.info("ItemStack: {} {} {}", i, armor.getType(), iR);
+            if (iR) v = true;
+
+            i++;
         }
         return v;
     }

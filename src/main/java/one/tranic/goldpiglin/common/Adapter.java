@@ -9,6 +9,8 @@ import one.tranic.goldpiglin.paper.V1_20_R4_Paper;
 import one.tranic.goldpiglin.paper.V1_21_R2_Paper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -35,7 +37,7 @@ public enum Adapter {
     PAPER("Paper", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 12)) return new V1_21_R2_Paper();
+            if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Paper();
             return Version.isMinimumVersion(20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
         }
     },
@@ -43,7 +45,6 @@ public enum Adapter {
         @Override
         public BaseTarget createTarget() {
             boolean paper = Platform.get() != Platform.Spigot;
-
             if (Version.isMinimumVersion(20, 5)) return paper ? new V1_20_R4_NAPI_Paper() : new V1_20_R4_NAPI_Bukkit();
             return paper ? new V1_20_R1_NAPI_Paper() : new V1_20_R1_NAPI_Bukkit();
         }
@@ -59,6 +60,12 @@ public enum Adapter {
     };
 
     private static final Adapter now = getAdapter(Config.getAdapter());
+    private static final Logger logger = LoggerFactory.getLogger("Adapter");
+
+    static {
+        logger.info("Minecraft version detected: {}.{}.{}", Version.getMajor(), Version.getMinor(), Version.getPatch());
+    }
+
     private final String adapterName;
     private final String adapterClass;
     private final boolean isPresent;
