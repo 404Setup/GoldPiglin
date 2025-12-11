@@ -17,7 +17,8 @@ public enum Adapter {
     Spigot("Spigot", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 11)) return null;
+            if (Version.isMinimumVersion(21, 12)) return null;
+            if (Version.isMinimumVersion(21, 11)) return new V1_21_R7_Spigot();
             if (Version.isMinimumVersion(21, 10)) return new V1_21_R6_Spigot();
             if (Version.isMinimumVersion(21, 8)) return new V1_21_R5_Spigot();
             if (Version.isMinimumVersion(21, 5)) return new V1_21_R4_Spigot();
@@ -34,7 +35,7 @@ public enum Adapter {
     PAPER("Paper", null) {
         @Override
         public BaseTarget createTarget() {
-            if (Version.isMinimumVersion(21, 11)) return new V1_21_R2_Paper();
+            if (Version.isMinimumVersion(21, 12)) return new V1_21_R2_Paper();
             return Version.isMinimumVersion(20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
         }
     },

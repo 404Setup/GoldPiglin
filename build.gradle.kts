@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":Bukkit:V1_21_R4"))
     implementation(project(":Bukkit:V1_21_R5"))
     implementation(project(":Bukkit:V1_21_R6"))
+    implementation(project(":Bukkit:V1_21_R7"))
     implementation("one.pkg:tiny-utils:2.2.0")
     //implementation(files("t-utils-1.2.4.jar"))
     //implementation(files("t-utils-1.2.4-sources.jar"))
