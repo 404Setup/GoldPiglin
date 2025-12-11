@@ -8,10 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Piglin;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -98,7 +95,7 @@ public abstract class BaseTarget implements Listener {
             if (Config.isDebug()) logger.info("EntityTargetLivingEntityEvent: The event was cancelled");
             return;
         }
-        if (event.getEntity() instanceof Piglin entity && event.getTarget() instanceof Player player) {
+        if (event.getEntity() instanceof PiglinAbstract entity && event.getTarget() instanceof Player player) {
             var piglinTarget = this.targets.get(entity.getUniqueId());
             if (player.getGameMode().equals(GameMode.CREATIVE) ||
                     !player.getWorld().isPiglinSafe() ||
@@ -144,13 +141,9 @@ public abstract class BaseTarget implements Listener {
         boolean v = false;
         int i = 0;
         for (@Nullable ItemStack armor : armors) {
-            if (armor == null) {
-                if (Config.isDebug()) logger.info("ItemStack: {} is null", i);
-                continue;
-            }
+            if (armor == null) continue;
             if (isGoldArmor(armor.getType())) {
                 v = false;
-                logger.info("ItemStack: {} With golden armor", i);
                 break; // If it's golden armor, use vanilla behavior
             }
             var iR = readItemStack(armor);
