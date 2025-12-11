@@ -16,8 +16,8 @@
 > - The Spigot adapter is only available in Spigot and its forks (not in Paper).
 > - The Paper adapter is only available in Paper and its forks (not in Spigot).
 
-- Spigot (NMS Mode) 1.20.1-1.21.7
-- Paper (NMS Mode) 1.20.1-1.21.7
+- Spigot (NMS Mode) 1.20.1-1.21.11
+- Paper (NMS Mode) 1.20.1-1.21.11
 - NBTAPI 2.13.2
 - RTag 1.5.10
 
