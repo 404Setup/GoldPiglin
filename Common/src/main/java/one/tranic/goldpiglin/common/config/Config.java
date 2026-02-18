@@ -1,5 +1,6 @@
 package one.tranic.goldpiglin.common.config;
 
+import one.tranic.goldpiglin.common.GoldPiglinLogger;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,22 +27,22 @@ public class Config {
 
     public static synchronized void reload(JavaPlugin plugin) {
         configFile = plugin.getDataFolder().toPath().getParent().resolve("GoldPiglin").resolve("config.yml").toFile();
-        try {
-            if (!configFile.exists()) {
+        if (!configFile.exists()) {
+            try {
                 if (!configFile.getParentFile().exists()) {
-                    configFile.getParentFile().mkdir();
+                    configFile.getParentFile().mkdirs();
                 }
                 configFile.createNewFile();
+            } catch (IOException e) {
+                GoldPiglinLogger.logger.error("Could not create configuration file!", e);
             }
-            configuration = YamlConfiguration.loadConfiguration(configFile);
-            save();
-            read();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+        configuration = YamlConfiguration.loadConfiguration(configFile);
+        save();
+        read();
     }
 
-    public static synchronized void save() throws IOException {
+    public static synchronized void save() {
         configuration.addDefault("adapter", "NBTAPI");
         configuration.addDefault("debug", false);
         configuration.addDefault("update-message", true);
@@ -68,7 +69,11 @@ public class Config {
         configuration.setComments("hatred.can-see.reversal", List.of("Inverted line of sight calculations to calculate entity line of sight instead of player line of sight"));
 
         configuration.options().copyDefaults(true);
-        configuration.save(configFile);
+        try {
+            configuration.save(configFile);
+        } catch (IOException e) {
+            GoldPiglinLogger.logger.error("Could not save configuration file!", e);
+        }
     }
 
     private static synchronized void read() {
