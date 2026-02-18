@@ -1,6 +1,5 @@
 package one.tranic.goldpiglin.common;
 
-import one.pkg.tinyutils.Collections;
 import one.tranic.goldpiglin.common.config.Config;
 import one.tranic.goldpiglin.common.data.ExpiringHashMap;
 import one.tranic.goldpiglin.common.data.Scheduler;
@@ -192,16 +191,13 @@ public abstract class BaseTarget implements Listener {
 
     private void getEntityStats(Player player) {
         List<Entity> entities = player.getNearbyEntities(Config.getHatred().getNearX(), Config.getHatred().getNearY(), Config.getHatred().getNearZ());
-        List<Entity> finallyEntities = Collections.newArrayList();
         for (Entity e : entities) {
             if (e instanceof Player || !(e instanceof PiglinAbstract)) continue;
             if (Config.getHatred().isCanSee()) {
                 boolean v = Config.getHatred().isNativeCanSee() ? canSeeNative(player, e) : canSee(player, (LivingEntity) e);
                 if (!v) continue;
             }
-            finallyEntities.add(e);
-        }
-        for (Entity e : finallyEntities)
             targets.put(e.getUniqueId(), new TargetEntry(player.getUniqueId(), e.getUniqueId()));
+        }
     }
 }
