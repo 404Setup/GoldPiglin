@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 public class Scheduler {
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(JVMThread.newVirtualThreadFactoryOrDefault());
-    private static final ExecutorService asyncExecutor = Executors.newFixedThreadPool(3, JVMThread.newVirtualThreadFactoryOrDefault());
+    private static final ExecutorService asyncExecutor = Executors.newCachedThreadPool(JVMThread.newVirtualThreadFactoryOrDefault());
 
     private Scheduler() {
     }
