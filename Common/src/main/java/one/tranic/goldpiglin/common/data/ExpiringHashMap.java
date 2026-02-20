@@ -2,11 +2,13 @@ package one.tranic.goldpiglin.common.data;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -183,7 +185,94 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public @NotNull Set<Entry<K, V>> entrySet() {
-        return entryStream().collect(Collectors.toSet());
+        return new EntrySet();
+    }
+
+    private final class EntrySet extends AbstractSet<Entry<K, V>> {
+        @Override
+        public @NotNull Iterator<Entry<K, V>> iterator() {
+            return new EntryIterator();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            if (!(o instanceof Map.Entry<?, ?> e))
+                return false;
+            Object key = e.getKey();
+            V value = get(key);
+            return value != null && Objects.equals(value, e.getValue());
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (!(o instanceof Map.Entry<?, ?> e))
+                return false;
+            Object key = e.getKey();
+            V value = get(key);
+            if (value != null && Objects.equals(value, e.getValue())) {
+                ExpiringHashMap.this.remove(key);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int size() {
+            long currentTime = System.currentTimeMillis();
+            return (int) expirationMap.entrySet().stream()
+                    .filter(entry -> entry.getValue() > currentTime)
+                    .count();
+        }
+
+        @Override
+        public void clear() {
+            ExpiringHashMap.this.clear();
+        }
+    }
+
+    private final class EntryIterator implements Iterator<Entry<K, V>> {
+        private final Iterator<Entry<K, Long>> iter = expirationMap.entrySet().iterator();
+        private SimpleEntry<K, V> nextEntry;
+        private SimpleEntry<K, V> currentEntry;
+
+        EntryIterator() {
+            advance();
+        }
+
+        private void advance() {
+            long currentTime = System.currentTimeMillis();
+            nextEntry = null;
+            while (iter.hasNext()) {
+                Entry<K, Long> e = iter.next();
+                if (e.getValue() > currentTime) {
+                    V val = map.get(e.getKey());
+                    if (val != null) {
+                        nextEntry = new SimpleEntry<>(e.getKey(), val);
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nextEntry != null;
+        }
+
+        @Override
+        public Entry<K, V> next() {
+            if (nextEntry == null) throw new NoSuchElementException();
+            currentEntry = nextEntry;
+            advance();
+            return currentEntry;
+        }
+
+        @Override
+        public void remove() {
+            if (currentEntry == null) throw new IllegalStateException();
+            ExpiringHashMap.this.remove(currentEntry.getKey());
+            currentEntry = null;
+        }
     }
 
     public Stream<SimpleEntry<K, V>> entryStream() {
