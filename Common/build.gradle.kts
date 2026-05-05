@@ -8,7 +8,7 @@ dependencies {
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
-    testImplementation("one.pkg:tiny-utils:2.2.0")
+    testImplementation(libs.pkg.tinyutils)
 }
 
 val targetJavaVersion = 17

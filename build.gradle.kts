@@ -1,21 +1,21 @@
+import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     java
-    id("com.gradleup.shadow") version "9.0.0-beta13" apply false
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply false
+    alias(libs.plugins.shadow).apply(false)
+    alias(libs.plugins.paperweight).apply(false)
 }
 
-group = "one.tranic"
-version = "25.12.2"
+group = "one.pkg"
+version = "26.1.0"
 
 allprojects {
-    apply(plugin = "java")
-    apply(plugin = "com.gradleup.shadow")
+    apply<JavaLibraryPlugin>()
+    apply<ShadowPlugin>()
 
     repositories {
         mavenLocal()
-        maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://oss.sonatype.org/content/groups/public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":Paper:V1_20_R1"))
     implementation(project(":Paper:V1_20_R4"))
     implementation(project(":Paper:V1_21_R2"))
+    implementation(project(":Paper:V26_1"))
     implementation(project(":Bukkit"))
     implementation(project(":Bukkit:V1_20_R1"))
     implementation(project(":Bukkit:V1_20_R2"))
@@ -53,9 +54,8 @@ dependencies {
     implementation(project(":Bukkit:V1_21_R5"))
     implementation(project(":Bukkit:V1_21_R6"))
     implementation(project(":Bukkit:V1_21_R7"))
+    implementation(project(":Bukkit:V26_1"))
     implementation("one.pkg:tiny-utils:2.2.0")
-    //implementation(files("t-utils-1.2.4.jar"))
-    //implementation(files("t-utils-1.2.4-sources.jar"))
     compileOnly("org.slf4j:slf4j-api:2.0.16")
     compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.13.2")
@@ -92,7 +92,7 @@ tasks.named<ProcessResources>("processResources") {
     }
 }
 
-val libPackage = "one.tranic.goldpiglin.libs"
+val libPackage = "one.pkg.goldpiglin.libs"
 
 tasks.withType<ShadowJar> {
     relocate("one.pkg.tinyutils", "${libPackage}.tinyutils")

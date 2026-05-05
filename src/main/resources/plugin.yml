@@ -1,6 +1,6 @@
 name: GoldPiglin
 version: '${version}'
-main: one.tranic.goldpiglin.GoldPiglin
+main: one.pkg.goldpiglin.GoldPiglin
 api-version: '1.20'
 folia-supported: true
 load: STARTUP
