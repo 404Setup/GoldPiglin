@@ -1,6 +1,7 @@
 package one.pkg.goldpiglin.common.config;
 
 import one.pkg.goldpiglin.common.GoldPiglinLogger;
+import one.pkg.tinyutils.minecraft.Platform;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,7 +44,7 @@ public class Config {
     }
 
     public static synchronized void save() {
-        configuration.addDefault("adapter", "NBTAPI");
+        configuration.addDefault("adapter", Platform.get() == Platform.Paper ? "Paper" : "Spigot");
         configuration.addDefault("debug", false);
         configuration.addDefault("update-message", true);
         configuration.addDefault("hatred.expiration-time", 20L);
@@ -59,7 +60,7 @@ public class Config {
         configuration.setComments("adapter",
                 List.of("Select according to your needs.",
                         "Supported adapters: Spigot, Paper, NBTAPI, Rtag",
-                        "The Spigot adapter is compatible with 1.20.1-1.21.11, if Minecraft releases",
+                        "The Spigot adapter is compatible with 1.20.1-26.2, if Minecraft releases",
                         "an update then you have to wait for the new GoldPiglin version",
                         " (Paper adapter does not need to wait for updates most of the time).")
         );

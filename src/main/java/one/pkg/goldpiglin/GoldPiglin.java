@@ -34,7 +34,7 @@ public class GoldPiglin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (Version.getMinor() < 20)
+        if (Version.getMajor() < 2 && Version.getMinor() < 20)
             throw new UnsupportedOperationException("GoldPiglin cannot run on this version of the server!");
 
         instance = this;
