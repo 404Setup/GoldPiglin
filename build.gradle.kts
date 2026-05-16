@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "one.pkg"
-version = "26.1.0"
+version = "26.1.1"
 
 allprojects {
     apply<JavaLibraryPlugin>()

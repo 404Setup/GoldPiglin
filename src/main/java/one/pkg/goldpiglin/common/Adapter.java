@@ -40,8 +40,8 @@ public enum Adapter {
         @Override
         public BaseTarget createTarget() {
             if (Version.isMinimumVersionNoPatch(26, 1)) return new V26_1_Paper();
-            if (Version.isMinimumVersion(21, 3)) return new V1_21_R2_Paper();
-            return Version.isMinimumVersion(20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
+            if (Version.isMinimumVersion(1,21, 3)) return new V1_21_R2_Paper();
+            return Version.isMinimumVersion(1, 20, 5) ? new V1_20_R4_Paper() : new V1_20_R1_Paper();
         }
     },
     NBTAPI("NBTAPI", "de.tr7zw.nbtapi.NBT") {
