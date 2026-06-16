@@ -185,8 +185,9 @@ public abstract class BaseTarget implements Listener {
 
         if (angle > Math.toRadians(VIEW_ANGLE) || playerLocation.distance(entityLocation) > MAX_DISTANCE) return false;
 
-        RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, MAX_DISTANCE);
-        return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < entityLocation.toVector().distance(playerLocation.toVector()));
+        double distance = entityLocation.distance(playerLocation);
+        RayTraceResult result = player.getWorld().rayTraceBlocks(playerLocation, directionToEntity, distance);
+        return result == null || result.getHitBlock() == null || !(result.getHitPosition().distance(playerLocation.toVector()) < distance);
     }
 
     private void getEntityStats(Player player) {

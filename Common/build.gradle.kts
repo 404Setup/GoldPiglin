@@ -7,6 +7,8 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.1.0")
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    testImplementation("org.slf4j:slf4j-api:2.0.7")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testImplementation(libs.pkg.tinyutils)
 }
