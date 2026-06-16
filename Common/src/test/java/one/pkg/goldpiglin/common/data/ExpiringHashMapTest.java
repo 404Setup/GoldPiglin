@@ -21,7 +21,6 @@ class ExpiringHashMapTest {
 
     @AfterAll
     static void tearDown() {
-        Scheduler.shutdown();
     }
 
     @Test

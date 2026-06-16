@@ -27,18 +27,18 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
         this.expirationMap = new ConcurrentHashMap<>();
         this.expirationTime = expirationTime;
 
-        Scheduler.asyncExecute(() -> {
-            try {
-                for (; ; ) {
-                    if (Thread.currentThread().isInterrupted())
-                        return;
-                    TimeUnit.SECONDS.sleep(expirationScannerTime);
-                    removeExpiredEntries();
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        scheduleScanner(expirationScannerTime);
+    }
+
+    private void scheduleScanner(long expirationScannerTime) {
+        java.lang.ref.WeakReference<ExpiringHashMap<K, V>> weakThis = new java.lang.ref.WeakReference<>(this);
+        Scheduler.schedule(() -> {
+            ExpiringHashMap<K, V> mapInstance = weakThis.get();
+            if (mapInstance != null) {
+                mapInstance.removeExpiredEntries();
+                mapInstance.scheduleScanner(expirationScannerTime);
             }
-        });
+        }, expirationScannerTime, TimeUnit.SECONDS);
     }
 
     private void removeExpiredEntries() {
