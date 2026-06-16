@@ -2,6 +2,7 @@ package one.pkg.goldpiglin.common.data;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.HashSet;
@@ -164,23 +165,12 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
 
     @Override
     public @NotNull Set<K> keySet() {
-        long currentTime = System.currentTimeMillis();
-
-        return expirationMap.entrySet().stream()
-                .filter(entry -> entry.getValue() > currentTime)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+        return new KeySet();
     }
 
     @Override
     public @NotNull Collection<V> values() {
-        long currentTime = System.currentTimeMillis();
-
-        return expirationMap.entrySet().stream()
-                .filter(entry -> entry.getValue() > currentTime)
-                .map(entry -> map.get(entry.getKey()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return new Values();
     }
 
     @Override
@@ -222,6 +212,61 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
             return (int) expirationMap.entrySet().stream()
                     .filter(entry -> entry.getValue() > currentTime)
                     .count();
+        }
+
+        @Override
+        public void clear() {
+            ExpiringHashMap.this.clear();
+        }
+    }
+
+    private final class KeySet extends AbstractSet<K> {
+        @Override
+        public @NotNull Iterator<K> iterator() {
+            return new KeyIterator();
+        }
+
+        @Override
+        public int size() {
+            long currentTime = System.currentTimeMillis();
+            return (int) expirationMap.entrySet().stream()
+                    .filter(entry -> entry.getValue() > currentTime)
+                    .count();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return ExpiringHashMap.this.remove(o) != null;
+        }
+
+        @Override
+        public void clear() {
+            ExpiringHashMap.this.clear();
+        }
+    }
+
+    private final class Values extends AbstractCollection<V> {
+        @Override
+        public @NotNull Iterator<V> iterator() {
+            return new ValueIterator();
+        }
+
+        @Override
+        public int size() {
+            long currentTime = System.currentTimeMillis();
+            return (int) expirationMap.entrySet().stream()
+                    .filter(entry -> entry.getValue() > currentTime)
+                    .count();
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return containsValue(o);
         }
 
         @Override
@@ -272,6 +317,44 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
             if (currentEntry == null) throw new IllegalStateException();
             ExpiringHashMap.this.remove(currentEntry.getKey());
             currentEntry = null;
+        }
+    }
+
+    private final class KeyIterator implements Iterator<K> {
+        private final Iterator<Entry<K, V>> iter = entrySet().iterator();
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        public K next() {
+            return iter.next().getKey();
+        }
+
+        @Override
+        public void remove() {
+            iter.remove();
+        }
+    }
+
+    private final class ValueIterator implements Iterator<V> {
+        private final Iterator<Entry<K, V>> iter = entrySet().iterator();
+
+        @Override
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        @Override
+        public V next() {
+            return iter.next().getValue();
+        }
+
+        @Override
+        public void remove() {
+            iter.remove();
         }
     }
 
