@@ -8,8 +8,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class FetchVersion {
@@ -17,7 +16,7 @@ public class FetchVersion {
     private final String oldVersion;
     private String newVersion;
     private Date lastUpdate = new Date();
-    private ScheduledExecutorService scheduler;
+    private ScheduledFuture<?> scheduledTask;
 
     public FetchVersion(String local) {
         this.oldVersion = local;
@@ -29,17 +28,12 @@ public class FetchVersion {
     }
 
     public void run() {
-        scheduler = Executors.newSingleThreadScheduledExecutor(r -> {
-            Thread t = JVMThread.newVirtualThreadFactoryOrDefault().newThread(r);
-            t.setName("GoldPiglin Updater Thread");
-            return t;
-        });
-        scheduler.schedule(this::checkForUpdates, 2, TimeUnit.HOURS);
+        scheduledTask = Scheduler.schedule(this::checkForUpdates, 2, TimeUnit.HOURS);
     }
 
     public void stop() {
-        if (scheduler != null && !scheduler.isShutdown()) {
-            scheduler.shutdownNow();
+        if (scheduledTask != null && !scheduledTask.isCancelled()) {
+            scheduledTask.cancel(true);
         }
     }
 

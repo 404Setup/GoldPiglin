@@ -19,11 +19,6 @@ class ExpiringHashMapTest {
         map = new ExpiringHashMap<>(5, 1);
     }
 
-    @AfterAll
-    static void tearDown() {
-        Scheduler.shutdown();
-    }
-
     @Test
     void testEntrySetReturnsCorrectEntries() {
         map.put("key1", "value1");
