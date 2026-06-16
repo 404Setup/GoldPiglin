@@ -61,16 +61,8 @@ public class ExpiringHashMap<K, V> implements Map<K, V> {
     private void syncMaps() {
         // Two-way balance to avoid strange problems
         if (map.size() != expirationMap.size()) {
-            Set<K> mapKeys = new HashSet<>(map.keySet());
-            Set<K> expirationKeys = new HashSet<>(expirationMap.keySet());
-
-            mapKeys.stream()
-                    .filter(key -> !expirationMap.containsKey(key))
-                    .forEach(map::remove);
-
-            expirationKeys.stream()
-                    .filter(key -> !map.containsKey(key))
-                    .forEach(expirationMap::remove);
+            map.keySet().removeIf(key -> !expirationMap.containsKey(key));
+            expirationMap.keySet().removeIf(key -> !map.containsKey(key));
         }
     }
 
