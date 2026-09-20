@@ -72,9 +72,7 @@ java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-    }
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -97,13 +95,12 @@ val libPackage = "one.pkg.goldpiglin.libs"
 tasks.withType<ShadowJar> {
     relocate("one.pkg.tinyutils", "${libPackage}.tinyutils")
 
-    minimize {
-        exclude("META-INF/**")
-        exclude("com/google/gson/**")
-        exclude("com/google/errorprone/**")
-        exclude("org/intellij/lang/annotations/**")
-        exclude("org/jetbrains/annotations/**")
-        exclude("org/checkerframework/**")
-        exclude("org/slf4j/**")
-    }
+    minimize()
+    exclude("META-INF/**")
+    exclude("com/google/gson/**")
+    exclude("com/google/errorprone/**")
+    exclude("org/intellij/lang/annotations/**")
+    exclude("org/jetbrains/annotations/**")
+    exclude("org/checkerframework/**")
+    exclude("org/slf4j/**")
 }

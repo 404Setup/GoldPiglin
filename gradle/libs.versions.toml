@@ -1,6 +1,6 @@
 [versions]
-shadow = "9.4.0"
-paperweight = "2.0.0-beta.21"
+shadow = "9.6.1"
+paperweight = "2.0.0-beta.23"
 
 tiny-utils = "2.2.0"
 
